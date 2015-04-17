@@ -1,0 +1,30 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:typ="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:mes="http://schemas.microsoft.com/exchange/services/2006/messages">
+   <soapenv:Header>
+   </soapenv:Header>
+   <soapenv:Body>
+      <mes:FindItem Traversal="Shallow">
+         <mes:ItemShape>
+            <typ:BaseShape>IdOnly</typ:BaseShape>
+            <!--Optional:-->
+            <typ:AdditionalProperties>
+               <!--You have a CHOICE of the next 1 items at this level-->
+               <typ:FieldURI FieldURI="item:Subject" />
+               <typ:FieldURI FieldURI="calendar:Start" />
+               <typ:FieldURI FieldURI="calendar:End" />
+               <typ:FieldURI FieldURI="item:DisplayTo" />
+               <typ:FieldURI FieldURI="item:DisplayCc" />
+               <typ:FieldURI FieldURI="calendar:IsAllDayEvent" />
+               <typ:FieldURI FieldURI="calendar:Location" />
+               <typ:FieldURI FieldURI="calendar:MyResponseType" />
+               <typ:FieldURI FieldURI="calendar:Organizer" />
+            </typ:AdditionalProperties>
+         </mes:ItemShape>
+         <!--You have a CHOICE of the next 4 items at this level-->
+         <mes:CalendarView MaxEntriesReturned="5" StartDate="{{ .StartDate }}" EndDate="{{ .EndDate }}"/>
+         <mes:ParentFolderIds>
+           <!--You have a CHOICE of the next 2 items at this level-->
+            <typ:FolderId Id="{{ .FolderId }}" ChangeKey="{{ .ChangeKey }}" />
+         </mes:ParentFolderIds>
+      </mes:FindItem>
+   </soapenv:Body>
+</soapenv:Envelope>

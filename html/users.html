@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>CalendarPi - User List</title>
+    <link href="css" media="all" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Calendar Pi</h1>
+    <table  class="table-style-three">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Date Registered</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      {{with .Users}}
+        {{ range . }}
+        <tr>
+          <td>{{ .Username }}</td>
+          <td>{{ .Datecreated }}</td>
+          <td><a href="/delete?username={{ .Username }}">Delete</a></td>
+        </tr>
+        {{ end }}
+      {{ end }}
+      {{ if .Users }}
+      {{ else }}
+      <tr><td colspan=3>No users registered</td></tr>
+      {{ end }}
+    </table>
+    <a href="/add" class="btn red">Register</a>
+  </body>
+</html>

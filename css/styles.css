@@ -1,0 +1,50 @@
+table.table-style-three {
+    font-family: verdana, arial, sans-serif;
+    font-size: 11px;
+    color: #333333;
+    border-width: 1px;
+    border-color: #3A3A3A;
+    border-collapse: collapse;
+}
+table.table-style-three th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #FFA6A6;
+    background-color: #D56A6A;
+    color: #ffffff;
+}
+table.table-style-three tr:hover td {
+    cursor: pointer;
+}
+table.table-style-three tr:nth-child(even) td{
+    background-color: #F7CFCF;
+}
+table.table-style-three td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #FFA6A6;
+    background-color: #ffffff;
+}
+.btn {
+  border-radius: 5px;
+  padding: 5px 25px;
+  font-size: 16px;
+  text-decoration: none;
+  margin: 10px 0 0 0 ;
+  color: #fff;
+  position: relative;
+  display: inline-block;
+}
+.red {
+  background-color: #D56A6A;
+  box-shadow: 3px 3px 2px 0px #CE3323;
+}
+.red:hover {
+  background-color: #FF6656;
+}
+.errorMessage{
+  background-color: red;
+  font-size:28px;
+}

@@ -1,0 +1,10 @@
+{
+  "SyncMinutes": 10,
+  "WebServerPort": "443",
+  "SSLCertificateFile": "your_cert_file.pem",
+  "SSLPrivateKeyFile": "your_private_key.pem",
+  "OauthClientId": "From_http://developer.google.com/console",
+  "OauthClientSecret": "From_http://developer.google.com/console",
+  "OauthRedirectURL": "https://your_domain.com/oauth2callback"
+  "ExchangeServerURL": "https://mail.your_exchange_server.com/EWS/Exchange.asmx"
+}

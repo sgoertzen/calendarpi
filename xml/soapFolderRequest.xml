@@ -1,0 +1,14 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:typ="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:mes="http://schemas.microsoft.com/exchange/services/2006/messages">
+<soapenv:Header>
+</soapenv:Header>
+<soapenv:Body>
+<mes:GetFolder>
+<mes:FolderShape>
+<typ:BaseShape>IdOnly</typ:BaseShape>
+</mes:FolderShape>
+<mes:FolderIds>
+<typ:DistinguishedFolderId Id="calendar" />
+</mes:FolderIds>
+</mes:GetFolder>
+</soapenv:Body>
+</soapenv:Envelope>

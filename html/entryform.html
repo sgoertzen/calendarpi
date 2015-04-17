@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>Outlook / Google Calendar Sync</title>
+    <link href="css" media="all" rel="stylesheet" type="text/css" />
+    <style>
+      span{
+        display: block;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Outlook / Google Calendar Sync</h1>
+    <form id="mainform" action="/save" method="post">
+      <span>Exchange Login: </span><input name="username" type="text"></input>
+      <span>Exchange Password: </span><input name="password" type="password"></input>
+      <span></span><button class="btn red" onclick="submitform">Save and continue</button>
+    </form>
+    <script>
+      function submitform(){
+        // TODO: Validate the form!
+        document.forms["mainform"].submit();
+      }
+    </script>
+  </body>
+</html>
