@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>Outlook / Google Calendar Sync</title>
+    <link href="css" media="all" rel="stylesheet" type="text/css" />
+    <style>
+      span{
+        display: block;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Outlook / Google Calendar Sync</h1>
+    Please enter the encryption key for the program.
+    <form id="mainform" action="/savekey" method="post">
+      <div><input type="password" name="encryptionkey"></input></div>
+      <button class="btn red" onclick="submitform">Start Application</button>
+    </form>
+    <script>
+      function submitform(){
+        // TODO: Validate the form!
+        document.forms["mainform"].submit();
+      }
+    </script>
+  </body>
+</html>

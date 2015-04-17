@@ -24,24 +24,50 @@ func RunServer(conf WebConfig) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+
 	path := r.URL.Path[1:]
+
 
 	switch path {
 	case "css":
 		showFile(w, "css/styles.css")
+	case "favicon.ico":
+		showFile(w, "images/favicon.ico")
+	case "savekey":
+		saveKey(w,r)
 	case "oauth2callback":
 		handleOauthCallback(w, r)
 	case "add":
+		if needskey(w) { return }
 		showAddForm(w, r)
 	case "save":
+		if needskey(w) { return }
 		saveAddForm(w, r)
 	case "delete":
+		if needskey(w) { return }
 		showDeleteForm(w, r, "")
 	case "confirmdelete":
+		if needskey(w) { return }
 		performDelete(w, r)
 	default:
+		if needskey(w) { return }
 		showUserList(w, r)
 	}
+}
+
+func needskey(w http.ResponseWriter) bool {
+	key := Key()
+	if len(key) < 5 {
+		showFile(w, "html/keyform.html")
+		return true
+	}
+	return false
+}
+
+func saveKey(w http.ResponseWriter, r *http.Request) {
+	key := r.FormValue("encryptionkey")
+	SetKey(key)
+	redirectHome(w, r)
 }
 
 func handleOauthCallback(w http.ResponseWriter, r *http.Request) {

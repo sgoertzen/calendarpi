@@ -34,7 +34,6 @@ func main() {
 	config := readConfig()
 	SetConfig(config)
 	SetConfig2(config)
-	Load()
 	go RunServer(config)
 	runSyncLoop(config)
 	log.Println("Server is exiting")

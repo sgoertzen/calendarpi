@@ -10,7 +10,19 @@ import (
 var backupFile = "blabbersnatzle.bak"
 
 // TODO: Read this in on first start and store in memory
-var key = []byte("example key 1234")
+var key []byte
+
+func Key() []byte {
+	return key
+}
+
+func SetKey(keystring string) {
+	key = []byte(keystring)
+	err := Load()
+	if err != nil {
+		log.Println("Error while loading file.  Ignoring.")
+	}
+}
 
 
 func Save() error {
@@ -22,7 +34,11 @@ func Save() error {
 		log.Println("Unable to json the users!")
 		return err
 	}
-	encryptedData := Encrypt(key, data)
+	encryptedData, err := Encrypt(key, data)
+	if err != nil {
+		log.Println("Unable to encyrpt the data")
+		return err
+	}
 	err2 := ioutil.WriteFile(backupFile, []byte(encryptedData), 777)
 	if err2 != nil {
 		log.Println("Unable to backup the file!")
@@ -38,7 +54,11 @@ func Load() error {
 		log.Println("Unable to find the backed up users file.")
 		return err
 	}
-	decryptedData := Decrypt(key, string(filebytes))
+	decryptedData, err := Decrypt(key, string(filebytes))
+	if err != nil {
+		log.Println("Unable to decrypt the file")
+		return err
+	}
 	var users []User
 	err3 := json.Unmarshal([]byte(decryptedData), &users)
 	if err3 != nil {
