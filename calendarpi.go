@@ -13,10 +13,6 @@ TODO
 Test output of soap request template
 Test post call to server with soap request
 
-Put in initial entry of security key
-Put in automatic exporting and encrypting with security key
-Put in automatic importing and decrypting with security key
-
 Write job to actually do sync!
 How are we going to show status of syncs and display errors
 Allow sync to happen immediately on new accounts but scheduled after that

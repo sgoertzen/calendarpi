@@ -13,14 +13,20 @@
     <h1>Outlook / Google Calendar Sync</h1>
     Please enter the encryption key for the program.
     <form id="mainform" action="/savekey" method="post">
-      <div><input type="password" name="encryptionkey"></input></div>
+      <div id="lengtherror" style="display:none">Key must be at least 10 characters in length</div>
+      <div><input type="password" name="encryptionkey" id="encryptionkey"></input></div>
       <button class="btn red" onclick="submitform">Start Application</button>
     </form>
     <script>
       function submitform(){
         // TODO: Validate the form!
+        if (document.getElementById('encryptionkey').value.length < 10){
+          document.getElementById('lengtherror').style("display:block")
+          return false
+        }
         document.forms["mainform"].submit();
       }
+      document.getElementById('encryptionkey').focus()
     </script>
   </body>
 </html>

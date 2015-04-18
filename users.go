@@ -35,7 +35,10 @@ func (u User) Save() {
 		u.Datecreated = time.Now()
 	}
 	m[u.Username] = u
-	Save()
+	err := Save()
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func GetUser(username string) User {
