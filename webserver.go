@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type WebConfig interface {
@@ -29,10 +30,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 
 	switch path {
-	case "css":
-		showFile(w, "css/styles.css")
-	case "favicon.ico":
-		showFile(w, "images/favicon.ico")
 	case "savekey":
 		saveKey(w,r)
 	case "oauth2callback":
@@ -49,15 +46,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "confirmdelete":
 		if needskey(w) { return }
 		performDelete(w, r)
-	default:
+	case "":
 		if needskey(w) { return }
 		showUserList(w, r)
+	default:
+		showFile(w, path)
 	}
 }
 
 func needskey(w http.ResponseWriter) bool {
 	key := Key()
-	if len(key) < 5 {
+	if len(key) < 10 {
 		showFile(w, "html/keyform.html")
 		return true
 	}
@@ -147,6 +146,12 @@ func showFile(w http.ResponseWriter, filename string) {
 	html, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Println(err)
+	}
+	if strings.HasSuffix(filename, ".js") {
+		w.Header().Set("Content-Type", "application/javascript")
+	}
+	if strings.HasSuffix(filename, ".css") {
+		w.Header().Set("Content-Type", "text/css")
 	}
 	fmt.Fprintf(w, string(html))
 }
