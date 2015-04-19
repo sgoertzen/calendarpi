@@ -21,7 +21,6 @@ Give option to choose calendar or create a new one
 
 Look into using mux for routing
 Put files into different packages
-Turn func into methods on the structs.  Or maybe just use packages.
 */
 
 const configfile = "conf.json"

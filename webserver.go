@@ -148,10 +148,10 @@ func showFile(w http.ResponseWriter, filename string) {
 		log.Println(err)
 	}
 	if strings.HasSuffix(filename, ".js") {
-		w.Header().Set("Content-Type", "application/javascript")
+		w.Header().Set("content-Type", "application/x-javascript")
 	}
 	if strings.HasSuffix(filename, ".css") {
-		w.Header().Set("Content-Type", "text/css")
+		w.Header().Set("content-Type", "text/css")
 	}
 	fmt.Fprintf(w, string(html))
 }
