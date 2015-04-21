@@ -8,7 +8,25 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 )
+
+func CreateKey(keystring string) ([]byte, error) {
+	if len(keystring) > 32 {
+		keystring = keystring[:32]
+	}
+
+	// Key must be one of the following lengths: 16, 24, or 32
+	if len(keystring) < aes.BlockSize {
+		message := fmt.Sprintf("Key is to short!  Must be at least %d", aes.BlockSize)
+		return nil, errors.New(message)
+	}
+	// Append to make an increment of the blocksize
+	if len(keystring)%aes.BlockSize != 0 {
+		keystring = keystring + strings.Repeat("*", aes.BlockSize-(len(keystring)%aes.BlockSize))
+	}
+	return []byte(keystring), nil
+}
 
 // encrypt string to base64 crypto using AES
 func Encrypt(key []byte, plaintext []byte) (string, error) {

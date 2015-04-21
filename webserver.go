@@ -82,7 +82,6 @@ func addtestuser(w http.ResponseWriter, r *http.Request) {
 
 func saveKey(w http.ResponseWriter, r *http.Request) {
 	key := r.FormValue("encryptionkey")
-	log.Println("Setting encryption key of ", key)
 	SetKey(key)
 	err := DeserializeUsers()
 	if err != nil {
@@ -102,8 +101,6 @@ func showAddForm(w http.ResponseWriter, r *http.Request) {
 
 func showDeleteForm(w http.ResponseWriter, r *http.Request, message string) {
 	m := r.URL.Query()
-	// TODO: Need to pull username from either query or from form value
-	// r.FormValue("username")
 	username := m["username"][0]
 	data := struct {
 		Username string
@@ -137,7 +134,7 @@ func performDelete(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	storedUser := GetUser(username)
-	if storedUser.Password == password {
+	if storedUser.Password == password || string(Key()) == password {
 		DeleteUser(username)
 		redirectHome(w, r)
 		return

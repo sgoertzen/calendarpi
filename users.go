@@ -35,7 +35,7 @@ func (u User) Save() {
 		u.Datecreated = time.Now()
 	}
 	m[u.Username] = u
-	err := SerializeUsers()
+	err := SerializeUsers(GetUsers())
 	if err != nil {
 		log.Println(err)
 	}
@@ -64,7 +64,7 @@ func GetUsers() []User {
 func DeleteUser(username string) {
 	log.Printf("Removing user of %s", username)
 	delete(m, username)
-	err := SerializeUsers()
+	err := SerializeUsers(GetUsers())
 	if err != nil {
 		log.Println(err)
 	}

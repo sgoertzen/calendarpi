@@ -21,6 +21,12 @@ Give option to choose calendar or create a new one
 
 Look into using mux for routing
 Put files into different packages
+
+Use this instead of err != nil all over
+if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+	return "", err
+}
+
 */
 
 const configfile = "conf.json"

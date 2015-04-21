@@ -1,14 +1,10 @@
 package main
 
 import (
-	"crypto/aes"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 )
 
 var backupFile = "blabbersnatzle.bak"
@@ -20,29 +16,16 @@ func Key() []byte {
 }
 
 func SetKey(keystring string) error {
-	if len(keystring) < aes.BlockSize {
-		message := fmt.Sprintf("Key is to short!  Must be at least %d", aes.BlockSize)
-		return errors.New(message)
-	}
-	if len(keystring)%aes.BlockSize != 0 {
-		keystring = keystring + strings.Repeat("*", len(keystring)%aes.BlockSize)
-	}
-	key = []byte(keystring)
-	return nil
+	localkey, err := CreateKey(keystring)
+	key = localkey
+	return err
 }
 
-func SerializeUsers() error {
+func SerializeUsers(users []User) error {
 	log.Println("Serializing users")
 	os.Remove(backupFile)
-	users := GetUsers()
-	data, err := json.Marshal(users)
+	encryptedData, err := serializeAndEncrypt(users)
 	if err != nil {
-		log.Println("Unable to json the users!")
-		return err
-	}
-	encryptedData, err := Encrypt(key, data)
-	if err != nil {
-		log.Println("Unable to encyrpt the data")
 		return err
 	}
 	err2 := ioutil.WriteFile(backupFile, []byte(encryptedData), 777)
@@ -51,6 +34,20 @@ func SerializeUsers() error {
 		return err2
 	}
 	return nil
+}
+
+func serializeAndEncrypt(users []User) (string, error) {
+	data, err := json.Marshal(users)
+	if err != nil {
+		log.Println("Unable to json the users!")
+		return "", err
+	}
+	encryptedData, err := Encrypt(key, data)
+	if err != nil {
+		log.Println("Unable to encyrpt the data")
+		return "", err
+	}
+	return encryptedData, nil
 }
 
 func DeserializeUsers() error {
