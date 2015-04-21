@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 )
 
 type ExchangeConfig interface {
@@ -52,8 +53,8 @@ func getExchangeCalendarData(user User) string {
 
 func buildCalendarRequest(folderid string, changekey string) []byte {
 	// TODO: Make dates use current date and two weeks in the future
-	startDate := "2015-02-20T17:30:24.127Z"
-	endDate := "2015-04-20T17:30:24.127Z"
+	startDate := time.Now().UTC().Format(time.RFC3339)
+	endDate := time.Now().UTC().AddDate(0, 0, 14).Format(time.RFC3339)
 
 	data := struct {
 		StartDate string
