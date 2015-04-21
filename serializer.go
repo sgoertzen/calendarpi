@@ -24,13 +24,12 @@ func SetKey(keystring string) error {
 		message := fmt.Sprintf("Key is to short!  Must be at least %d", aes.BlockSize)
 		return errors.New(message)
 	}
-	if len(keystring) % aes.BlockSize != 0 {
-		keystring = keystring + strings.Repeat("*", len(keystring) % aes.BlockSize)
+	if len(keystring)%aes.BlockSize != 0 {
+		keystring = keystring + strings.Repeat("*", len(keystring)%aes.BlockSize)
 	}
 	key = []byte(keystring)
 	return nil
 }
-
 
 func SerializeUsers() error {
 	log.Println("Serializing users")
@@ -69,16 +68,16 @@ func DeserializeUsers() error {
 	var users []User
 	err3 := json.Unmarshal([]byte(decryptedData), &users)
 	if err3 != nil {
-    log.Println("Error while unmarshaling the json")
-    return err
-  }
+		log.Println("Error while unmarshaling the json")
+		return err
+	}
 	err2 := os.Remove(backupFile)
 	if err2 != nil {
 		log.Println("Unable to delete the file!")
 		return err
 	}
 	for _, user := range users {
-	  user.Save()
+		user.Save()
 	}
 	return nil
 }

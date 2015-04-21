@@ -28,28 +28,37 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path[1:]
 
-
 	switch path {
 	case "savekey":
-		saveKey(w,r)
+		saveKey(w, r)
 	case "oauth2callback":
 		handleOauthCallback(w, r)
 	case "add":
-		if needskey(w) { return }
+		if needskey(w) {
+			return
+		}
 		showAddForm(w, r)
 	case "save":
-		if needskey(w) { return }
+		if needskey(w) {
+			return
+		}
 		saveAddForm(w, r)
 	case "delete":
-		if needskey(w) { return }
+		if needskey(w) {
+			return
+		}
 		showDeleteForm(w, r, "")
 	case "confirmdelete":
-		if needskey(w) { return }
+		if needskey(w) {
+			return
+		}
 		performDelete(w, r)
 	case "addtestuser":
-		addtestuser(w,r)
+		addtestuser(w, r)
 	case "":
-		if needskey(w) { return }
+		if needskey(w) {
+			return
+		}
 		showUserList(w, r)
 	default:
 		showFile(w, path)

@@ -14,7 +14,7 @@ type ExchangeConfig interface {
 
 var exchangeURL string
 
-func SetConfig2(config ExchangeConfig){
+func SetConfig2(config ExchangeConfig) {
 	exchangeURL = config.ExchangeURL()
 }
 
@@ -27,7 +27,7 @@ func getFolderAndChangeKey(user User) User {
 	results, err := postContents(soapReq, user)
 
 	if err != nil {
-	    log.Println(err)
+		log.Println(err)
 	}
 
 	item := ParseCalendarFolder(string(results))
@@ -84,7 +84,7 @@ func postContents(contents []byte, user User) (string, error) {
 	req2, err := http.NewRequest("POST", exchangeURL, bytes.NewBuffer(contents))
 	req2.Header.Set("Host", user.Username+"@webmail.vwgoa.com")
 	req2.Header.Set("Content-Type", "text/xml")
-	req2.SetBasicAuth("na/"+user.Username,user.Password)
+	req2.SetBasicAuth("na/"+user.Username, user.Password)
 
 	client := &http.Client{}
 	response, err := client.Do(req2)
@@ -92,7 +92,7 @@ func postContents(contents []byte, user User) (string, error) {
 
 	content, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-			log.Println(err)
+		log.Println(err)
 	}
 	return string(content), nil
 }

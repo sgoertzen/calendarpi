@@ -8,7 +8,7 @@ type Config struct {
 	OauthClientId      string
 	OauthClientSecret  string
 	OauthRedirectURL   string
-	ExchangeServerURL string
+	ExchangeServerURL  string
 }
 
 func (c Config) MinutesBetweenSync() int {
