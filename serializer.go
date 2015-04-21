@@ -1,31 +1,38 @@
 package main
 
 import (
+	"crypto/aes"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 var backupFile = "blabbersnatzle.bak"
 
-// TODO: Read this in on first start and store in memory
 var key []byte
 
 func Key() []byte {
 	return key
 }
 
-func SetKey(keystring string) {
-	key = []byte(keystring)
-	err := Load()
-	if err != nil {
-		log.Println("Error while loading file.  Ignoring.")
+func SetKey(keystring string) error {
+	if len(keystring) < aes.BlockSize {
+		message := fmt.Sprintf("Key is to short!  Must be at least %d", aes.BlockSize)
+		return errors.New(message)
 	}
+	if len(keystring) % aes.BlockSize != 0 {
+		keystring = keystring + strings.Repeat("*", len(keystring) % aes.BlockSize)
+	}
+	key = []byte(keystring)
+	return nil
 }
 
 
-func Save() error {
+func SerializeUsers() error {
 	log.Println("Serializing users")
 	os.Remove(backupFile)
 	users := GetUsers()
@@ -47,14 +54,14 @@ func Save() error {
 	return nil
 }
 
-func Load() error {
+func DeserializeUsers() error {
 	log.Println("Unserializing users")
 	filebytes, err := ioutil.ReadFile(backupFile)
 	if err != nil {
 		log.Println("Unable to find the backed up users file.")
 		return err
 	}
-	decryptedData, err := Decrypt(key, string(filebytes))
+	decryptedData, err := Decrypt(key, filebytes)
 	if err != nil {
 		log.Println("Unable to decrypt the file")
 		return err

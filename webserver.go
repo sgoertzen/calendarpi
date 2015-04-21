@@ -46,6 +46,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "confirmdelete":
 		if needskey(w) { return }
 		performDelete(w, r)
+	case "addtestuser":
+		addtestuser(w,r)
 	case "":
 		if needskey(w) { return }
 		showUserList(w, r)
@@ -63,9 +65,20 @@ func needskey(w http.ResponseWriter) bool {
 	return false
 }
 
+func addtestuser(w http.ResponseWriter, r *http.Request) {
+	user := User{Username: "blah", Password: "password", State: exchangeLoginCaptured}
+	user.Save()
+	redirectHome(w, r)
+}
+
 func saveKey(w http.ResponseWriter, r *http.Request) {
 	key := r.FormValue("encryptionkey")
+	log.Println("Setting encryption key of ", key)
 	SetKey(key)
+	err := DeserializeUsers()
+	if err != nil {
+		log.Println("Error while loading file.  Ignoring:", err)
+	}
 	redirectHome(w, r)
 }
 

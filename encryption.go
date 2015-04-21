@@ -33,15 +33,12 @@ func Encrypt(key []byte, plaintext []byte) (string, error) {
 }
 
 // decrypt from base64 to decrypted string
-func Decrypt(key []byte, cryptoText string) (string, error) {
-
+func Decrypt(key []byte, cryptoText []byte) (string, error) {
 	ciphertext, _ := base64.URLEncoding.DecodeString(string(cryptoText))
-
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
 	}
-
 	// The IV needs to be unique, but not secure. Therefore it's common to
 	// include it at the beginning of the ciphertext.
 	if len(ciphertext) < aes.BlockSize {

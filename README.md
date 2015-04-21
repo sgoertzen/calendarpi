@@ -42,6 +42,3 @@ The first time the software runs it will error out and create a conf.json file i
 
 ## Usage
 Once the software is running point your browser to https://yourmachinename:10443/ (Or whatever port you put into the config file)
-
-## TODO
- - Have website prompt for configuration values if they aren't set

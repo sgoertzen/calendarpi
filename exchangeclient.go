@@ -35,6 +35,7 @@ func getFolderAndChangeKey(user User) User {
 	user.Folderid = item.Id
 	user.Changekey = item.ChangeKey
 	user.State = exchangeLoginVerified
+	log.Println("Fetched folderid of ", user.Folderid)
 	user.Save()
 	return user
 }
