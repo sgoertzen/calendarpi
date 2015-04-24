@@ -1,0 +1,25 @@
+<html>
+  <head>
+    {{ .Header }}
+  </head>
+  <body>
+    <h1>Calendar Pi - Select Google Calendar</h1>
+    <form id="mainform" action="/save" method="post">
+      <span>Select Calendar:</span>
+      <select>
+        {{with .Calendars}}
+          {{ range . }}
+            <option>{{ .Name }}</option>
+          {{ end }}
+        {{ end }}
+      </select>
+      <div><button class="btn red" onclick="submitform">Save and continue</button></div>
+    </form>
+    <script>
+      function submitform(){
+        // TODO: Validate the form!
+        document.forms["mainform"].submit();
+      }
+    </script>
+  </body>
+</html>

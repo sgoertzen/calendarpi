@@ -38,7 +38,7 @@ func tryOAuth2(w http.ResponseWriter, r *http.Request, user User) {
 	http.Redirect(w, r, string(url), 302)
 }
 
-func handleOAuthResponse(w http.ResponseWriter, r *http.Request) {
+func handleOAuthResponse(w http.ResponseWriter, r *http.Request) (User, error) {
 	username := r.URL.Query().Get("state")
 	log.Printf("Username is: %s", username)
 
@@ -48,6 +48,7 @@ func handleOAuthResponse(w http.ResponseWriter, r *http.Request) {
 	token, err := conf.Exchange(oauth2.NoContext, code)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return User{}, err
 	}
 	log.Printf("Token is %s", token)
 
@@ -55,4 +56,5 @@ func handleOAuthResponse(w http.ResponseWriter, r *http.Request) {
 	user.Token = token
 	user.State = registered
 	user.Save()
+return user, nil
 }

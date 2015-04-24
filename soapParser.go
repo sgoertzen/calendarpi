@@ -49,10 +49,7 @@ type Appointment struct {
 
 // TODO: refactor this method with ParseAppointments
 func ParseCalendarFolder(soap string) ItemId {
-	// TODO: Should I just pass in a byte[] instead of string
 	decoder := xml.NewDecoder(bytes.NewBufferString(soap))
-
-	//itemId := make(ItemId)
 	var itemId ItemId
 
 	for {
@@ -66,7 +63,6 @@ func ParseCalendarFolder(soap string) ItemId {
 			if se.Name.Local == "FolderId" {
 				decoder.DecodeElement(&itemId, &se)
 				break
-				//appointments = append(appointments, item.ToAppointment())
 			}
 		}
 	}
@@ -74,7 +70,6 @@ func ParseCalendarFolder(soap string) ItemId {
 }
 
 func ParseAppointments(soap string) []Appointment {
-	// TODO: Should I just pass in a byte[] instead of string
 	decoder := xml.NewDecoder(bytes.NewBufferString(soap))
 
 	appointments := make([]Appointment, 0)
@@ -96,6 +91,7 @@ func ParseAppointments(soap string) []Appointment {
 	}
 	return appointments
 }
+
 
 func (c CalendarItem) ToAppointment() Appointment {
 	app := Appointment{

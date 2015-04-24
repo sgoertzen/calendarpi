@@ -10,10 +10,6 @@ import (
 
 /*
 TODO
-Test output of soap request template
-Test post call to server with soap request
-
-Write job to actually do sync!
 How are we going to show status of syncs and display errors
 Allow sync to happen immediately on new accounts but scheduled after that
 
@@ -22,11 +18,7 @@ Give option to choose calendar or create a new one
 Look into using mux for routing
 Put files into different packages
 
-Use this instead of err != nil all over
-if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-	return "", err
-}
-
+TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
 */
 
 const configfile = "conf.json"
@@ -53,8 +45,7 @@ func readConfig() Config {
 	}
 	decoder := json.NewDecoder(file)
 	config := Config{}
-	err = decoder.Decode(&config)
-	if err != nil {
+	if err = decoder.Decode(&config); err != nil {
 		log.Fatal("Unable to parse the configuration file 'conf.json'", err)
 	}
 	return config

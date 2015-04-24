@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type WebConfig interface {
@@ -15,10 +16,17 @@ type WebConfig interface {
 	PrivateKey() string
 }
 
+var header string
+
 func RunServer(conf WebConfig) {
 	log.Println("Webserver starting on port " + conf.Port())
+	headerbytes, err := ioutil.ReadFile("html/header.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	header = string(headerbytes)
 	http.HandleFunc("/", handler)
-	err := http.ListenAndServeTLS(":"+conf.Port(), conf.Certificate(), conf.PrivateKey(), nil)
+	err = http.ListenAndServeTLS(":"+conf.Port(), conf.Certificate(), conf.PrivateKey(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,32 +42,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "oauth2callback":
 		handleOauthCallback(w, r)
 	case "add":
-		if needskey(w) {
-			return
-		}
-		showAddForm(w, r)
+		if !needskey(w) { showAddForm(w, r) }
 	case "save":
-		if needskey(w) {
-			return
-		}
-		saveAddForm(w, r)
+		if !needskey(w) { saveAddForm(w, r) }
 	case "delete":
-		if needskey(w) {
-			return
-		}
-		showDeleteForm(w, r, "")
+		if !needskey(w) { showDeleteForm(w, r, "") }
 	case "confirmdelete":
-		if needskey(w) {
-			return
-		}
-		performDelete(w, r)
-	case "addtestuser":
-		addtestuser(w, r)
+		if !needskey(w) { performDelete(w, r) }
+	case "logic": // TESTING ONLY.  REMOVE!
+		user := GetUser("goertzs")
+		log.Println("Starting on user ", user.Username)
+		//soapResults := getExchangeCalendarData(user)
+		getGCalAppointments(user, "todo")
+		//log.Println("soapresults", soapResults)
+		//appointments := ParseAppointments(soapResults)
+		//log.Println("len:", len(appointments))
+		//processAppointments(user, appointments)
+		redirectHome(w, r)
 	case "":
-		if needskey(w) {
-			return
-		}
-		showUserList(w, r)
+		if !needskey(w) { showUserList(w, r) }
 	default:
 		showFile(w, path)
 	}
@@ -68,16 +69,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func needskey(w http.ResponseWriter) bool {
 	key := Key()
 	if len(key) < 10 {
-		showFile(w, "html/keyform.html")
+		data := map[string] interface {} {
+			"Header":template.HTML(header),
+		}
+		showTemplatedFile(w, "html/keyform.html", data)
 		return true
 	}
 	return false
-}
-
-func addtestuser(w http.ResponseWriter, r *http.Request) {
-	user := User{Username: "blah", Password: "password", State: exchangeLoginCaptured}
-	user.Save()
-	redirectHome(w, r)
 }
 
 func saveKey(w http.ResponseWriter, r *http.Request) {
@@ -91,23 +89,30 @@ func saveKey(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleOauthCallback(w http.ResponseWriter, r *http.Request) {
-	handleOAuthResponse(w, r)
-	redirectHome(w, r)
+	user, err := handleOAuthResponse(w, r)
+	if err != nil {
+		return;
+	}
+	showCalendarSelectPage(w, r, user)
+}
+
+func showCalendarSelectPage(w http.ResponseWriter, r *http.Request, user User) {
+	data := map[string] interface {} {
+		"Calendars":GetCalendarList(user),
+	}
+	showTemplatedFile(w, "html/calendarform.html", data)
 }
 
 func showAddForm(w http.ResponseWriter, r *http.Request) {
-	showFile(w, "html/entryform.html")
+	showTemplatedFile(w, "html/entryform.html", nil)
 }
 
 func showDeleteForm(w http.ResponseWriter, r *http.Request, message string) {
 	m := r.URL.Query()
 	username := m["username"][0]
-	data := struct {
-		Username string
-		Message  string
-	}{
-		username,
-		message,
+	data := map[string] interface {} {
+		"Username":username,
+		"Message":message,
 	}
 	showTemplatedFile(w, "html/deleteform.html", data)
 }
@@ -115,17 +120,15 @@ func showDeleteForm(w http.ResponseWriter, r *http.Request, message string) {
 func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	user := User{Username: username, Password: password, State: exchangeLoginCaptured}
+	user := User{Username: username, Password: password, State: exchangeLoginCaptured, Datecreated: time.Now()}
 	user.Save()
 	getFolderAndChangeKey(user)
 	tryOAuth2(w, r, user)
 }
 
 func showUserList(w http.ResponseWriter, r *http.Request) {
-	data := struct {
-		Users []User
-	}{
-		GetUsers(),
+	data := map[string] interface {} {
+		"Users":GetUsers(),
 	}
 	showTemplatedFile(w, "html/users.html", data)
 }
@@ -147,7 +150,16 @@ func redirectHome(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 302)
 }
 
-func showTemplatedFile(w http.ResponseWriter, filename string, data interface{}) {
+func addCommonData(data map[string] interface{}){
+	data["Header"] = template.HTML(header)
+}
+
+func showTemplatedFile(w http.ResponseWriter, filename string, data map[string] interface{}) {
+	if data == nil {
+		data = map[string] interface{} {}
+	}
+	addCommonData(data)
+
 	t, err := template.ParseFiles(filename)
 	if err != nil {
 		log.Printf("Error is", err)

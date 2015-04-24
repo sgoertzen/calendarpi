@@ -11,16 +11,20 @@ type User struct {
 	Password    string
 	Token       *oauth2.Token
 	Datecreated time.Time
+	LastSync    time.Time
 	Folderid    string
 	Changekey   string
-	State       int
+	GCalid      string
+	State       string
 }
 
 const (
-	exchangeLoginCaptured = 1
-	exchangeLoginVerified = 20
-	oauthTokenRecieved    = 50
-	registered            = 100
+	exchangeLoginCaptured = "exchange login capture"
+	exchangeLoginVerified = "exchange login verified"
+	oauthTokenRecieved    = "oauth token recieved"
+	registered            = "idle"
+	syncing               = "syncing"
+	syncingerror          = "syncing error"
 )
 
 var m map[string]User
