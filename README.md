@@ -1,10 +1,12 @@
 # CalendarPi
 CalendarPi will sync calendar appointments between an Exchange Server and Google Calendar.  It is made to run on the RaspberryPi but can be run on any machine that supports Go.
 
-This software is not fully functional but is actively being developed.  
+[![Build Status](https://travis-ci.org/sgoertzen/calendarpi.svg?branch=master)](https://travis-ci.org/sgoertzen/calendarpi)
 
 ### Version
 0.1.0
+
+This software is not fully functional but is actively being developed.  
 
 ## Setup Instructions
 Download and install Go from https://golang.org/dl/ or from source by running:
@@ -25,6 +27,7 @@ Run the following commands in terminal
 ```sh
 go get google.golang.org/api/calendar/v3
 go get golang.org/x/oauth2
+go get github.com/stretchr/testify/assert
 ```
 
 ## To build:
