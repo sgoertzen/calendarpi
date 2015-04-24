@@ -92,7 +92,6 @@ func ParseAppointments(soap string) []Appointment {
 	return appointments
 }
 
-
 func (c CalendarItem) ToAppointment() Appointment {
 	app := Appointment{
 		ItemId:         c.ItemId.Id,

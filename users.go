@@ -29,13 +29,9 @@ type User struct {
 
 type Serializer func([]User) error
 
-//var MySerializer Serializer //= SerializeUsers
 var MySerializeUsers = SerializeUsers
-var m map[string]User
 
-/*func init() {
-	MySerializer = SerializeUsers
-}*/
+var m map[string]User
 
 func (u User) Save() {
 	if m == nil {

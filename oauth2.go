@@ -56,5 +56,5 @@ func handleOAuthResponse(w http.ResponseWriter, r *http.Request) (User, error) {
 	user.Token = token
 	user.State = registered
 	user.Save()
-return user, nil
+	return user, nil
 }
