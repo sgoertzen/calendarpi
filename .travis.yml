@@ -1,0 +1,11 @@
+language: go
+go:
+ - release
+ - tip
+
+install:
+  - go get google.golang.org/api/calendar/v3
+  - go get golang.org/x/oauth2
+
+script:
+ - go test -v ./...
