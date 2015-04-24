@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+const (
+	exchangeLoginCaptured = "exchange login capture"
+	exchangeLoginVerified = "exchange login verified"
+	oauthTokenRecieved    = "oauth token recieved"
+	registered            = "idle"
+	syncing               = "syncing"
+	syncingerror          = "syncing error"
+)
+
 type User struct {
 	Username    string
 	Password    string
@@ -18,16 +27,15 @@ type User struct {
 	State       string
 }
 
-const (
-	exchangeLoginCaptured = "exchange login capture"
-	exchangeLoginVerified = "exchange login verified"
-	oauthTokenRecieved    = "oauth token recieved"
-	registered            = "idle"
-	syncing               = "syncing"
-	syncingerror          = "syncing error"
-)
+type Serializer func([]User) error
 
+//var MySerializer Serializer //= SerializeUsers
+var MySerializeUsers = SerializeUsers
 var m map[string]User
+
+/*func init() {
+	MySerializer = SerializeUsers
+}*/
 
 func (u User) Save() {
 	if m == nil {
@@ -39,7 +47,7 @@ func (u User) Save() {
 		u.Datecreated = time.Now()
 	}
 	m[u.Username] = u
-	err := SerializeUsers(GetUsers())
+	err := MySerializeUsers(GetUsers())
 	if err != nil {
 		log.Println(err)
 	}
@@ -68,7 +76,7 @@ func GetUsers() []User {
 func DeleteUser(username string) error {
 	log.Printf("Removing user of %s", username)
 	delete(m, username)
-	err := SerializeUsers(GetUsers())
+	err := MySerializeUsers(GetUsers())
 	if err != nil {
 		log.Println(err)
 	}

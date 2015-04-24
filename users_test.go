@@ -5,6 +5,11 @@ import (
 	"testing"
 )
 
+func mock_Serializer(users []User) error {
+  // do I need to do anything here?
+  return nil
+}
+
 func TestGetEmptyUser(t *testing.T) {
   user := GetUser("non-existing")
 	assert.Nil(t, user.Token)
@@ -17,6 +22,7 @@ func TestGetEmptyUsers(t *testing.T) {
 }
 
 func TestDeleteEmptyUser(t *testing.T) {
+  MySerializeUsers = mock_Serializer
   err := DeleteUser("non-existing")
 	assert.Nil(t, err)
 }
