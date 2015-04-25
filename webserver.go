@@ -50,11 +50,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "delete":
 		if !needskey(w) {
-			showDeleteForm(w, r, "")
+			showDeleteForm(w, r, "", "")
 		}
 	case "confirmdelete":
 		if !needskey(w) {
 			performDelete(w, r)
+		}
+	case "selectcalendar":
+		if !needskey(w) {
+			showCalendarSelectPage(w, r)
 		}
 	case "logic": // TESTING ONLY.  REMOVE!
 		user := GetUser("goertzs")
@@ -102,10 +106,14 @@ func handleOauthCallback(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	showCalendarSelectPage(w, r, user)
+	http.Redirect(w, r, "selectcalendar?username="+user.Username, 302)
 }
 
-func showCalendarSelectPage(w http.ResponseWriter, r *http.Request, user User) {
+func showCalendarSelectPage(w http.ResponseWriter, r *http.Request) {
+	m := r.URL.Query()
+	username := m["username"][0]
+	user := GetUser(username)
+
 	data := map[string]interface{}{
 		"Calendars": GetCalendarList(user),
 	}
@@ -116,9 +124,14 @@ func showAddForm(w http.ResponseWriter, r *http.Request) {
 	showTemplatedFile(w, "html/entryform.html", nil)
 }
 
-func showDeleteForm(w http.ResponseWriter, r *http.Request, message string) {
-	m := r.URL.Query()
-	username := m["username"][0]
+func showDeleteForm(w http.ResponseWriter, r *http.Request, message string, username string) {
+	if len(username) == 0 {
+		m := r.URL.Query()
+		usernames := m["username"]
+		if len(usernames) >= 1 {
+			username = usernames[0]
+		}
+	}
 	data := map[string]interface{}{
 		"Username": username,
 		"Message":  message,
@@ -146,13 +159,19 @@ func performDelete(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	storedUser := GetUser(username)
-	if storedUser.Password == password || string(Key()) == password {
+	if storedUser.Password == password { //|| string(Key()) == CreateKey(username) {
 		DeleteUser(username)
-		redirectHome(w, r)
-		return
+	} else {
+		// Allow for pw that matches encryption key
+		key, _ := CreateKey(password)
+		if string(key) == string(Key()) {
+			DeleteUser(username)
+		} else {
+			showDeleteForm(w, r, "Incorrect Password", username)
+			return
+		}
 	}
-	showDeleteForm(w, r, "Incorrect Password")
-
+	redirectHome(w, r)
 }
 
 func redirectHome(w http.ResponseWriter, r *http.Request) {

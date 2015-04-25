@@ -15,6 +15,7 @@
     {{ end }}
     Please type your password remove your account
     <form id="mainform" action="/confirmdelete" method="post">
+      <input type="hidden" name="username" value="{{ .Username }}"></input>
       <span>Exchange Login: </span><span><b>{{ .Username }}</b></span>
       <span>Exchange Password: </span><input name="password" type="password"></input>
       <span></span><button class="btn red" onclick="submitform">Delete Account</button>
