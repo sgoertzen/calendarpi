@@ -3,6 +3,9 @@ CalendarPi will sync calendar appointments between an Exchange Server and Google
 
 [![Build Status](https://travis-ci.org/sgoertzen/calendarpi.svg?branch=master)](https://travis-ci.org/sgoertzen/calendarpi)
 [![Codacy Badge](https://www.codacy.com/project/badge/f0dedbbcb471499eb47456cf954018d3)](https://www.codacy.com/app/sgoertzen/calendarpi)
+[![Author Badge](https://img.shields.io/badge/awesome-totally-green.svg)](https://github.com/sgoertzen)
+
+
 
 ### Version
 0.1.0
