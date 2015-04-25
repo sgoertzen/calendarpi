@@ -39,7 +39,7 @@ table.table-style-three td {
 }
 .red {
   background-color: #D56A6A;
-  box-shadow: 3px 3px 2px 0px #CE3323;
+  box-shadow: 3px 3px 2px 0 #CE3323;
 }
 .red:hover {
   background-color: #FF6656;
