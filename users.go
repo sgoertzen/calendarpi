@@ -29,24 +29,26 @@ type User struct {
 
 type Serializer func([]User) error
 
-var MySerializeUsers = SerializeUsers
-
+var serializeUsers = SerializeUsers
 var m map[string]User
 
-func (u User) Save() {
+func (u User) Save() error {
 	if m == nil {
 		m = make(map[string]User)
 	}
 
 	log.Printf("Storing user of %s", u.Username)
-	if _, ok := m[u.Username]; !ok {
+	_, ok := m[u.Username]
+	if !ok {
 		u.Datecreated = time.Now()
 	}
 	m[u.Username] = u
-	err := MySerializeUsers(GetUsers())
+	err := serializeUsers(GetUsers())
 	if err != nil {
 		log.Println(err)
+		return err
 	}
+	return nil
 }
 
 func GetUser(username string) User {
@@ -72,7 +74,7 @@ func GetUsers() []User {
 func DeleteUser(username string) error {
 	log.Printf("Removing user of %s", username)
 	delete(m, username)
-	err := MySerializeUsers(GetUsers())
+	err := serializeUsers(GetUsers())
 	if err != nil {
 		log.Println(err)
 	}

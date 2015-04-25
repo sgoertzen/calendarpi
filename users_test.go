@@ -2,13 +2,40 @@ package main
 
 import (
 	"github.com/stretchr/testify/assert"
+	"errors"
 	"testing"
+	"time"
 )
 
+func TestSaveUser(t *testing.T) {
+	now := time.Now()
+	serialized := false
+	serializeUsers = func(users []User) error {
+		serialized = true
+		return nil
+	}
+	user := User{
+		Username: "bob",
+		Password: "hope",
+	}
+	user.Save()
 
-func mock_Serializer(users []User) error {
-	// do I need to do anything here?
-	return nil
+	// Now check to ensure a created date was set on the user
+	user = GetUser("bob")
+	assert.True(t, user.Datecreated.After(now))
+	assert.True(t, serialized)
+}
+
+func TestSaveUserWithSerializeFailure(t *testing.T) {
+	serializeUsers = func(users []User) error {
+		return errors.New("oh no!")
+	}
+	user := User{
+		Username: "bob",
+		Password: "hope",
+	}
+	err := user.Save()
+	assert.NotNil(t, err)
 }
 
 func TestGetEmptyUser(t *testing.T) {
@@ -17,13 +44,18 @@ func TestGetEmptyUser(t *testing.T) {
 	assert.Equal(t, "", user.Username)
 }
 
-func TestGetEmptyUsers(t *testing.T) {
+func TestGetUsers(t *testing.T) {
 	users := GetUsers()
-	assert.Equal(t, 0, len(users))
+	assert.Equal(t, 1, len(users))
 }
 
 func TestDeleteEmptyUser(t *testing.T) {
-	MySerializeUsers = mock_Serializer
+	serialized := false
+	serializeUsers = func(users []User) error {
+		serialized = true
+		return nil
+	}
 	err := DeleteUser("non-existing")
 	assert.Nil(t, err)
+	assert.True(t, serialized)
 }

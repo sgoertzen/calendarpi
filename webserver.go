@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type WebConfig interface {
@@ -130,7 +129,7 @@ func showDeleteForm(w http.ResponseWriter, r *http.Request, message string) {
 func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	user := User{Username: username, Password: password, State: exchangeLoginCaptured, Datecreated: time.Now()}
+	user := User{Username: username, Password: password, State: exchangeLoginCaptured}
 	user.Save()
 	getFolderAndChangeKey(user)
 	tryOAuth2(w, r, user)
