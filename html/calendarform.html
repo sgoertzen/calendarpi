@@ -4,12 +4,13 @@
   </head>
   <body>
     <h1>Calendar Pi - Select Google Calendar</h1>
-    <form id="mainform" action="/save" method="post">
+    <form id="mainform" action="/savecalendar" method="post">
+      <input type="hidden" name="username" value="{{ .Username }}"></input>
       <span>Select Calendar:</span>
-      <select>
-        {{with .Calendars}}
-          {{ range . }}
-            <option>{{ .Name }}</option>
+      <select id="calendar" name="calendar">
+        {{ with .Calendars }}
+          {{ range .Items }}
+            <option value="{{ .Id }}">{{ .Summary }}</option>
           {{ end }}
         {{ end }}
       </select>

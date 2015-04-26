@@ -19,6 +19,9 @@ Look into using mux for routing
 Put files into different packages
 
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
+
+TODO: support adding a new
+To add a new calendar to srv.Insert(calendar) - returns CalendarsInsertCall
 */
 
 const configfile = "conf.json"
@@ -60,7 +63,12 @@ func runSyncLoop(config Config) {
 			soapResults := getExchangeCalendarData(user)
 			appointments := ParseAppointments(soapResults)
 			log.Println("len:", len(appointments))
-			processAppointments(user, appointments)
+			//processAppointments(user, appointments)
+			events, err := getGCalAppointments(user)
+			if err != nil {
+				log.Fatal(err)
+			}
+			mergeEvents(appointments, events)
 		}
 	}
 }

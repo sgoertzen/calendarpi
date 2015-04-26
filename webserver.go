@@ -44,9 +44,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if !needskey(w) {
 			showAddForm(w, r)
 		}
-	case "save":
+	case "saveuser":
 		if !needskey(w) {
 			saveAddForm(w, r)
+		}
+	case "savecalendar":
+		if !needskey(w) {
+			saveCalendarForm(w, r)
 		}
 	case "delete":
 		if !needskey(w) {
@@ -63,12 +67,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "logic": // TESTING ONLY.  REMOVE!
 		user := GetUser("goertzs")
 		log.Println("Starting on user ", user.Username)
-		//soapResults := getExchangeCalendarData(user)
-		getGCalAppointments(user, "todo")
-		//log.Println("soapresults", soapResults)
-		//appointments := ParseAppointments(soapResults)
-		//log.Println("len:", len(appointments))
-		//processAppointments(user, appointments)
+
+		soapResults := getExchangeCalendarData(user)
+		appointments := ParseAppointments(soapResults)
+
+		events, err := getGCalAppointments(user)
+		if err != nil {
+			log.Fatal(err)
+		}
+		mergeEvents(appointments, events)
 		redirectHome(w, r)
 	case "":
 		if !needskey(w) {
@@ -116,6 +123,7 @@ func showCalendarSelectPage(w http.ResponseWriter, r *http.Request) {
 
 	data := map[string]interface{}{
 		"Calendars": GetCalendarList(user),
+		"Username": username,
 	}
 	showTemplatedFile(w, "html/calendarform.html", data)
 }
@@ -146,6 +154,15 @@ func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	user.Save()
 	getFolderAndChangeKey(user)
 	tryOAuth2(w, r, user)
+}
+
+func saveCalendarForm(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("username")
+	calendar := r.FormValue("calendar")
+	user := GetUser(username)
+	user.GCalid = calendar
+	user.Save()
+	redirectHome(w, r)
 }
 
 func showUserList(w http.ResponseWriter, r *http.Request) {
