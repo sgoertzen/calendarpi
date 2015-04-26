@@ -122,7 +122,7 @@ func showCalendarSelectPage(w http.ResponseWriter, r *http.Request) {
 	user := GetUser(username)
 
 	data := map[string]interface{}{
-		"Calendars": GetCalendarList(user),
+		"Calendars": GetGCalendarList(user),
 		"Username": username,
 	}
 	showTemplatedFile(w, "html/calendarform.html", data)

@@ -9,6 +9,7 @@
         <tr>
           <th>Username</th>
           <th>Date Registered</th>
+          <th>Last Sync</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -17,7 +18,8 @@
         {{ range . }}
         <tr>
           <td>{{ .Username }}</td>
-          <td>{{ .Datecreated }}</td>
+          <td><div data-date="{{ .Datecreated }}"></div></td>
+          <td><div data-date="{{ .LastSync }}"></div></td>
           <td>{{ .State }}</td>
           <td><a href="/delete?username={{ .Username }}">Delete</a></td>
         </tr>
@@ -30,5 +32,22 @@
     </table>
     <a href="/add" class="btn red">Register</a>
     <a href="/logic">Run Logic (test)</a>
+    <script>
+      // Once we are loaded then format and show the dates
+      $(document).ready(function() {
+        $("div[data-date]").each(function(key,value){
+          var div = $(value);
+          var date = div.data('date');
+          var mome = moment(date,'YYYY-MM-DD HH:mm:ss Z');
+          var formatted = '-';
+          if (mome.year() > 2000)
+          {
+            formatted = mome.format("MMMM Do YYYY, h:mm:ss a");
+          }
+          div.text(formatted);
+        });
+
+      });
+    </script>
   </body>
 </html>

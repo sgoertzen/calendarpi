@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func GetCalendarList(user User) *calendar.CalendarList {
+func GetGCalendarList(user User) *calendar.CalendarList {
 	client := getClient(user)
 	srv, err := calendar.New(client)
 	if err != nil {

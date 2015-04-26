@@ -28,7 +28,7 @@ func TestSaveUser(t *testing.T) {
 
 func TestSaveUserWithSerializeFailure(t *testing.T) {
 	serializeUsers = func(users []User) error {
-		return errors.New("oh no!")
+		return errors.New("Unable to serialize")
 	}
 	user := User{
 		Username: "bob",
