@@ -68,7 +68,7 @@ func runSyncLoop(config Config) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			mergeEvents(appointments, events)
+			mergeEvents(user, appointments, events)
 		}
 	}
 }

@@ -75,7 +75,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		mergeEvents(appointments, events)
+		mergeEvents(user, appointments, events)
 		redirectHome(w, r)
 	case "":
 		if !needskey(w) {
@@ -123,7 +123,7 @@ func showCalendarSelectPage(w http.ResponseWriter, r *http.Request) {
 
 	data := map[string]interface{}{
 		"Calendars": GetGCalendarList(user),
-		"Username": username,
+		"Username":  username,
 	}
 	showTemplatedFile(w, "html/calendarform.html", data)
 }
