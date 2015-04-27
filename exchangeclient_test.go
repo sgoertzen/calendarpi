@@ -7,7 +7,16 @@ import (
 	"testing"
 )
 
+type TestConfig struct {
+	ExchangeConfig
+}
+
+func (TestConfig) MaxFetchSize() int { return 100 }
+
 func TestBuildCalendarRequest(t *testing.T) {
+
+	SetExchangeConfig(TestConfig{})
+
 	requestbytes := buildCalendarRequest("black", "ninja")
 	request := string(requestbytes)
 	assert.NotNil(t, request)

@@ -9,6 +9,7 @@ type Config struct {
 	OauthClientSecret  string
 	OauthRedirectURL   string
 	ExchangeServerURL  string
+	MaxResults	int
 }
 
 func (c Config) MinutesBetweenSync() int {
@@ -41,4 +42,8 @@ func (c Config) RedirectURL() string {
 
 func (c Config) ExchangeURL() string {
 	return c.ExchangeServerURL
+}
+
+func (c Config) MaxFetchSize() int {
+	return c.MaxResults
 }

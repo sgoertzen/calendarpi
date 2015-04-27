@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -13,17 +14,21 @@ type OAuthConfig interface {
 	ClientId() string
 	ClientSecret() string
 	RedirectURL() string
+	MaxFetchSize() int
 }
+
+var maxFetchSize int
 
 var conf = &oauth2.Config{
 	Scopes:   []string{calendar.CalendarScope},
 	Endpoint: google.Endpoint,
 }
 
-func SetConfig(config OAuthConfig) {
+func SetOauthConfig(config OAuthConfig) {
 	conf.ClientID = config.ClientId()
 	conf.ClientSecret = config.ClientSecret()
 	conf.RedirectURL = config.RedirectURL()
+	maxFetchSize = config.MaxFetchSize()
 }
 
 func getClient(user User) *http.Client {
@@ -57,4 +62,33 @@ func handleOAuthResponse(w http.ResponseWriter, r *http.Request) (User, error) {
 	user.State = registered
 	user.Save()
 	return user, nil
+}
+
+func GetGCalendarList(user User) *calendar.CalendarList {
+	client := getClient(user)
+	srv, err := calendar.New(client)
+	if err != nil {
+		log.Println("Unable to get calendar service", err)
+	}
+	calendars, err2 := srv.CalendarList.List().MinAccessRole("writer").Do()
+	if err2 != nil {
+		log.Println("Unable to get calendar list", err)
+	}
+	return calendars
+}
+
+func getGCalAppointments(user User) (*calendar.Events, error) {
+	client := getClient(user)
+	srv, err := calendar.New(client)
+	if err != nil {
+		log.Println("Unable to retrieve calendar Client %v", err)
+	}
+	t := time.Now().Format(time.RFC3339)
+	events, err := srv.Events.List(user.GCalid).ShowDeleted(false).
+		SingleEvents(true).
+		TimeMin(t).MaxResults(int64(maxFetchSize)).OrderBy("startTime").Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve the user's events. %v", err)
+	}
+	return events, nil
 }

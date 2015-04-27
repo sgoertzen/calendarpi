@@ -11,12 +11,13 @@ import (
 
 type ExchangeConfig interface {
 	ExchangeURL() string
+	MaxFetchSize() int
 }
 
-var exchangeURL string
+var exchangeConfig ExchangeConfig
 
-func SetConfig2(config ExchangeConfig) {
-	exchangeURL = config.ExchangeURL()
+func SetExchangeConfig(config ExchangeConfig) {
+	exchangeConfig = config
 }
 
 func getFolderAndChangeKey(user User) User {
@@ -60,11 +61,13 @@ func buildCalendarRequest(folderid string, changekey string) []byte {
 		EndDate   string
 		FolderId  string
 		ChangeKey string
+		MaxFetchSize int
 	}{
 		startDate,
 		endDate,
 		folderid,
 		changekey,
+		exchangeConfig.MaxFetchSize(),
 	}
 
 	t, err := template.ParseFiles("xml/soapCalendarRequest.xml")
@@ -81,7 +84,7 @@ func buildCalendarRequest(folderid string, changekey string) []byte {
 }
 
 func postContents(contents []byte, user User) (string, error) {
-	req2, err := http.NewRequest("POST", exchangeURL, bytes.NewBuffer(contents))
+	req2, err := http.NewRequest("POST", exchangeConfig.ExchangeURL(), bytes.NewBuffer(contents))
 	req2.Header.Set("Host", user.Username+"@webmail.vwgoa.com")
 	req2.Header.Set("Content-Type", "text/xml")
 	req2.SetBasicAuth("na/"+user.Username, user.Password)

@@ -28,8 +28,8 @@ const configfile = "conf.json"
 
 func main() {
 	config := readConfig()
-	SetConfig(config)
-	SetConfig2(config)
+	SetOauthConfig(config)
+	SetExchangeConfig(config)
 	go RunServer(config)
 	runSyncLoop(config)
 	log.Println("Server is exiting")

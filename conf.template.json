@@ -5,6 +5,7 @@
   "SSLPrivateKeyFile": "your_private_key.pem",
   "OauthClientId": "From_http://developer.google.com/console",
   "OauthClientSecret": "From_http://developer.google.com/console",
-  "OauthRedirectURL": "https://your_domain.com/oauth2callback"
-  "ExchangeServerURL": "https://mail.your_exchange_server.com/EWS/Exchange.asmx"
+  "OauthRedirectURL": "https://your_domain.com/oauth2callback",
+  "ExchangeServerURL": "https://mail.your_exchange_server.com/EWS/Exchange.asmx",
+  "MaxResults": 100
 }
