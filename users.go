@@ -38,8 +38,8 @@ func (u User) Save() error {
 	}
 
 	log.Printf("Storing user of %s", u.Username)
-	_, ok := m[u.Username]
-	if !ok {
+	t := time.Time{}
+	if u.Datecreated == t {
 		u.Datecreated = time.Now()
 	}
 	m[u.Username] = u

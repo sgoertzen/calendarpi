@@ -13,6 +13,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		log.Fatalf("Unable to retrieve calendar Client %v", err)
 		return err
 	}
+	log.Println("Looping over %s appointments", len(appointments))
 	for _, app := range appointments {
 		eventExists := false
 		for _, event := range events.Items {
@@ -43,6 +44,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 				DateTime: app.End.Format(time.RFC3339),
 			}
 		}
+		log.Println("Adding event named ", app.Subject)
 
 		event := calendar.Event{
 			Summary:  app.Subject,
@@ -60,9 +62,9 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		retevent, err := srv.Events.Insert(user.GCalid, &event).Do()
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 		log.Println(retevent)
-		return err
 	}
 	// Event object is described here: https://godoc.org/google.golang.org/api/calendar/v3#Event
 	for _, i := range events.Items {

@@ -18,6 +18,9 @@ Give option to choose calendar or create a new one
 Look into using mux for routing
 Put files into different packages
 
+TODO: When adding focus on username entry
+TODO: When adding disable button and show spinner
+
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
 
 TODO: support adding a new
