@@ -27,8 +27,8 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		log.Println(retevent)
 	}
 	for _, edit := range editEvents {
-		log.Println("Would update event ", edit.Summary)
-		//srv.Events.Update(user.GCalid, edit).Do()
+		//log.Println("Would update event ", edit.Summary)
+		srv.Events.Patch(user.GCalid, edit.Id, edit).Do()
 	}
 	return nil
 }
@@ -46,7 +46,6 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) ([]*cal
 	for _, app := range appointments {
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
-			// TODO: Return Edit Events
 			log.Println("Skipping due to appointment already existing")
 			editEvents = append(editEvents, existingEvent)
 			continue

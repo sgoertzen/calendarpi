@@ -40,20 +40,26 @@ func TestPopulateEventEmpty(t *testing.T) {
 	e := calendar.Event {}
 	a := Appointment{
 			Subject:  "42",
+			ItemId: "uniqueId",
 		}
 	populateEvent(&e, &a)
 	assert.Equal(t, "42", e.Summary)
+	assert.Equal(t, "uniqueId", e.ExtendedProperties.Private["ItemId"])
 }
 
 func TestPopulateEventExisting(t *testing.T) {
 	e := calendar.Event {
+		Id: "train",
 		Summary: "blah",
 	}
 	a := Appointment{
 		Subject:  "42",
+		ItemId: "uniqueId",
 	}
 	populateEvent(&e, &a)
 	assert.Equal(t, "42", e.Summary)
+	assert.Equal(t, "train", e.Id)
+	assert.Equal(t, "uniqueId", e.ExtendedProperties.Private["ItemId"])
 }
 
 func TestBuildBody(t *testing.T) {
