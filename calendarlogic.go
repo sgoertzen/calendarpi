@@ -9,7 +9,7 @@ import (
 
 func mergeEvents(user User, appointments []Appointment, events *calendar.Events) error {
 
-	addEvents, err := buildDiffLists(appointments, events)
+	addEvents, editEvents, err := buildDiffLists(appointments, events)
 
 	client := getClient(user)
 	srv, err := calendar.New(client)
@@ -19,74 +19,78 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 	}
 	log.Println(srv)
 	for _, event := range addEvents {
-		retevent, err := srv.Events.Insert(user.GCalid, &event).Do()
+		retevent, err := srv.Events.Insert(user.GCalid, event).Do()
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 		log.Println(retevent)
 	}
+	for _, edit := range editEvents {
+		log.Println("Would update event ", edit.Summary)
+		//srv.Events.Update(user.GCalid, edit).Do()
+	}
 	return nil
 }
 
-func buildDiffLists(appointments []Appointment, events *calendar.Events) ([]calendar.Event, error) {
+func buildDiffLists(appointments []Appointment, events *calendar.Events) ([]*calendar.Event, []*calendar.Event, error) {
 
 	var itemMap = make(map[string]*calendar.Event)
 	for _, event := range events.Items {
 		itemMap[event.ExtendedProperties.Private["ItemId"]] = event
 	}
 
-	var addEvents []calendar.Event
+	var addEvents []*calendar.Event
+	var editEvents []*calendar.Event
 	log.Printf("Looping over %d appointments", len(appointments))
 	for _, app := range appointments {
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
-			// TODO: Update the event in case it has changed some
+			// TODO: Return Edit Events
 			log.Println("Skipping due to appointment already existing")
+			editEvents = append(editEvents, existingEvent)
 			continue
 		}
-
-		var eventStart, eventEnd calendar.EventDateTime
-		if app.IsAllDayEvent {
-			eventStart = calendar.EventDateTime{
-				Date: app.Start.Format("2006-01-02"),
-			}
-		} else {
-			eventStart = calendar.EventDateTime{
-				DateTime: app.Start.Format(time.RFC3339),
-			}
-			eventEnd = calendar.EventDateTime{
-				DateTime: app.End.Format(time.RFC3339),
-			}
-		}
-		log.Println("Adding event named ", app.Subject)
-
-		event := calendar.Event{
-			Summary:     app.Subject,
-			Location:    app.Location,
-			Start:       &eventStart,
-			//Description: StripTags(app.Body),
-			// Could use this instead: https://github.com/kennygrant/sanitize
-			Description: sanitize.HTML(app.Body),
-			End: &eventEnd,
-			ExtendedProperties: &calendar.EventExtendedProperties{
-				Private: map[string]string{"ItemId": app.ItemId},
-			},
-		}
-		addEvents = append(addEvents, event)
+		event := calendar.Event{}
+		populateEvent(&event, &app)
+		addEvents = append(addEvents, &event)
 	}
-	return addEvents, nil
+	return addEvents, editEvents, nil
 }
 
-// Event object is described here: https://godoc.org/google.golang.org/api/calendar/v3#Event
-/*for _, i := range events.Items {
-	var when string
-	// If the DateTime is an empty string the Event is an all-day Event.
-	// So only Date is available.
-	if i.Start.DateTime != "" {
-		when = i.Start.DateTime
+
+func populateEvent(e *calendar.Event, a *Appointment) {
+	var eventStart, eventEnd calendar.EventDateTime
+	if a.IsAllDayEvent {
+		eventStart = calendar.EventDateTime{ Date: a.Start.Format("2006-01-02"), }
 	} else {
-		when = i.Start.Date
+		eventStart = calendar.EventDateTime{ DateTime: a.Start.Format(time.RFC3339),}
+		eventEnd = calendar.EventDateTime{ DateTime: a.End.Format(time.RFC3339), }
 	}
-	log.Printf("%s (%s)\n", i.Summary, when)
-}*/
+
+	e.Summary = a.Subject
+	e.Location = a.Location
+	e.Start = &eventStart
+	e.End = &eventEnd
+	e.Description = buildDesc(a)
+	e.ExtendedProperties = &calendar.EventExtendedProperties{
+		Private: map[string]string{"ItemId": a.ItemId},
+	}
+}
+
+func buildDesc(a *Appointment) string {
+	var desc = ""
+
+	addField := func(field string, label string){
+		if len(field) > 0 {
+			desc += label + " " + field + "\n"
+		}
+	}
+	addField(a.Organizer, "Organizer:")
+	addField(a.To, "To:")
+	addField(a.Cc, "Cc:")
+	addField(a.MyResponseType, "Response:")
+	body := sanitize.HTML(a.Body)
+	desc += "\n" + body
+	return desc
+}
