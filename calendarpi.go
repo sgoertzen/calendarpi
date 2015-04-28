@@ -63,10 +63,8 @@ func runSyncLoop(config Config) {
 		time.Sleep(sleepTime)
 		users := GetUsers()
 		for _, user := range users {
-			soapResults := getExchangeCalendarData(user)
-			appointments := ParseAppointments(soapResults)
+			appointments := GetExchangeAppointments(user)
 			log.Println("len:", len(appointments))
-			//processAppointments(user, appointments)
 			events, err := getGCalAppointments(user)
 			if err != nil {
 				log.Fatal(err)

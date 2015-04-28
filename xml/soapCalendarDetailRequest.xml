@@ -1,0 +1,26 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:typ="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:mes="http://schemas.microsoft.com/exchange/services/2006/messages">
+<soapenv:Header>
+</soapenv:Header>
+<soapenv:Body>
+<mes:GetItem>
+    <mes:ItemShape>
+        <typ:BaseShape>IdOnly</typ:BaseShape>
+        <typ:AdditionalProperties>
+          <typ:FieldURI FieldURI="item:Subject" />
+          <typ:FieldURI FieldURI="calendar:Start" />
+          <typ:FieldURI FieldURI="calendar:End" />
+          <typ:FieldURI FieldURI="item:DisplayTo" />
+          <typ:FieldURI FieldURI="item:DisplayCc" />
+          <typ:FieldURI FieldURI="calendar:IsAllDayEvent" />
+          <typ:FieldURI FieldURI="calendar:Location" />
+          <typ:FieldURI FieldURI="calendar:MyResponseType" />
+          <typ:FieldURI FieldURI="calendar:Organizer" />
+          <typ:FieldURI FieldURI="item:Body" />
+        </typ:AdditionalProperties>
+    </mes:ItemShape>
+    <mes:ItemIds>
+      {{ range .Appointments }}<typ:ItemId Id="{{ .ItemId }}" ChangeKey="{{ .ChangeKey}}" />
+    {{ end }}</mes:ItemIds>
+</mes:GetItem>
+</soapenv:Body>
+</soapenv:Envelope>

@@ -68,8 +68,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		user := GetUser("goertzs")
 		log.Println("Starting on user ", user.Username)
 
-		soapResults := getExchangeCalendarData(user)
-		appointments := ParseAppointments(soapResults)
+		appointments := GetExchangeAppointments(user)
 
 		events, err := getGCalAppointments(user)
 		if err != nil {
@@ -152,7 +151,7 @@ func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	user := User{Username: username, Password: password, State: exchangeLoginCaptured}
 	user.Save()
-	getFolderAndChangeKey(user)
+	GetFolderAndChangeKey(user)
 	tryOAuth2(w, r, user)
 }
 

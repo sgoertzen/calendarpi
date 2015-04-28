@@ -9,15 +9,32 @@ import (
 
 type TestConfig struct {
 	ExchangeConfig
+	Maxsize int
 }
 
-func (TestConfig) MaxFetchSize() int { return 100 }
+func (t TestConfig) MaxFetchSize() int { return t.Maxsize }
 
-func TestBuildCalendarRequest(t *testing.T) {
+func TestBuildCalendarDetailRequest(t *testing.T) {
+	SetExchangeConfig(TestConfig{Maxsize: 101})
 
-	SetExchangeConfig(TestConfig{})
+	appoints := []Appointment{
+		Appointment{ItemId: "alpha", ChangeKey: "123"},
+		Appointment{ItemId: "beta", ChangeKey: "456"},
+	}
+	requestbytes := buildCalendarDetailRequest(appoints)
+	request := string(requestbytes)
+	assert.NotNil(t, request)
 
-	requestbytes := buildCalendarRequest("black", "ninja")
+	t.Log(request)
+	assert.True(t, strings.Contains(request, `<typ:ItemId Id="alpha" ChangeKey="123" />`))
+	assert.True(t, strings.Contains(request, `<typ:ItemId Id="beta" ChangeKey="456" />`))
+}
+
+func TestBuildCalendarItemRequest(t *testing.T) {
+
+	SetExchangeConfig(TestConfig{Maxsize: 99})
+
+	requestbytes := buildCalendarItemRequest("black", "ninja")
 	request := string(requestbytes)
 	assert.NotNil(t, request)
 
@@ -32,6 +49,7 @@ func TestBuildCalendarRequest(t *testing.T) {
 	keyvaluepairs := strings.Split(calendarline, " ")
 
 	// Verify the dates are there and the max entries contains a number
+	count := 0
 	for _, keyvalue := range keyvaluepairs {
 		if strings.Index(keyvalue, "=") > 0 {
 			parts := strings.Split(keyvalue, "=")
@@ -41,12 +59,16 @@ func TestBuildCalendarRequest(t *testing.T) {
 				numstring := parts[1][1 : len(parts[1])-1]
 				i, err := strconv.ParseInt(numstring, 0, 64)
 				assert.Nil(t, err)
-				assert.True(t, i > 0)
+				assert.Equal(t, int64(99), i)
+				count |= 1
 			case "StartDate":
 				assert.Equal(t, 22, len(parts[1]))
+				count |= 2
 			case "EndDate":
 				assert.Equal(t, 25, len(parts[1])) // Length includes ending xml />
+				count |= 4
 			}
 		}
 	}
+	assert.Equal(t, 7, count, "All properties were not found in the reponse.  Total: "+string(count))
 }

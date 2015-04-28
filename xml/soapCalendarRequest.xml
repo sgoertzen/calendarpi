@@ -5,19 +5,6 @@
       <mes:FindItem Traversal="Shallow">
          <mes:ItemShape>
             <typ:BaseShape>IdOnly</typ:BaseShape>
-            <!--Optional:-->
-            <typ:AdditionalProperties>
-               <!--You have a CHOICE of the next 1 items at this level-->
-               <typ:FieldURI FieldURI="item:Subject" />
-               <typ:FieldURI FieldURI="calendar:Start" />
-               <typ:FieldURI FieldURI="calendar:End" />
-               <typ:FieldURI FieldURI="item:DisplayTo" />
-               <typ:FieldURI FieldURI="item:DisplayCc" />
-               <typ:FieldURI FieldURI="calendar:IsAllDayEvent" />
-               <typ:FieldURI FieldURI="calendar:Location" />
-               <typ:FieldURI FieldURI="calendar:MyResponseType" />
-               <typ:FieldURI FieldURI="calendar:Organizer" />
-            </typ:AdditionalProperties>
          </mes:ItemShape>
          <!--You have a CHOICE of the next 4 items at this level-->
          <mes:CalendarView MaxEntriesReturned="{{ .MaxFetchSize }}" StartDate="{{ .StartDate }}" EndDate="{{ .EndDate }}"/>

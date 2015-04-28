@@ -32,10 +32,17 @@ type CalendarItem struct {
 	Location       string
 	MyResponseType string
 	Organizer      Organizer
+	Body           Body
+}
+
+type Body struct {
+	BodyType string `xml:"BodyType,attr"`
+	Body     string
 }
 
 type Appointment struct {
 	ItemId         string
+	ChangeKey      string
 	Subject        string
 	Cc             string
 	To             string
@@ -45,6 +52,8 @@ type Appointment struct {
 	Location       string
 	MyResponseType string
 	Organizer      string
+	Body           string
+	BodyType       string
 }
 
 // TODO: refactor this method with ParseAppointments
@@ -95,6 +104,7 @@ func ParseAppointments(soap string) []Appointment {
 func (c CalendarItem) ToAppointment() Appointment {
 	app := Appointment{
 		ItemId:         c.ItemId.Id,
+		ChangeKey:      c.ItemId.ChangeKey,
 		Subject:        c.Subject,
 		Cc:             c.DisplayCc,
 		To:             c.DisplayTo,
@@ -102,18 +112,24 @@ func (c CalendarItem) ToAppointment() Appointment {
 		Location:       c.Location,
 		MyResponseType: c.MyResponseType,
 		Organizer:      c.Organizer.Mailbox.Name,
+		Body:           c.Body.Body,
+		BodyType:       c.Body.BodyType,
 	}
-	t1, err := time.Parse(time.RFC3339, c.Start)
-	if err != nil {
-		log.Printf("Error while parsing time.  Time string is: ", c.Start, err)
+	if len(c.Start) > 0 {
+		t1, err := time.Parse(time.RFC3339, c.Start)
+		if err != nil {
+			log.Printf("Error while parsing time.  Time string is: ", c.Start, err)
+		}
+		app.Start = t1
 	}
-	app.Start = t1
 
-	t1, err = time.Parse(time.RFC3339, c.End)
-	if err != nil {
-		log.Printf("Error while parsing time.  Time string is: ", c.End, err)
+	if len(c.End) > 0 {
+		t1, err := time.Parse(time.RFC3339, c.End)
+		if err != nil {
+			log.Printf("Error while parsing time.  Time string is: ", c.End, err)
+		}
+		app.End = t1
 	}
-	app.End = t1
 	return app
 }
 

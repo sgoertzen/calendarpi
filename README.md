@@ -32,6 +32,7 @@ Run the following commands in terminal
 go get google.golang.org/api/calendar/v3
 go get golang.org/x/oauth2
 go get github.com/stretchr/testify/assert
+go get github.com/kennygrant/sanitize
 ```
 
 ## To build:

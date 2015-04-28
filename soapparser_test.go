@@ -103,3 +103,12 @@ func TestParseAppointments(t *testing.T) {
 	endtime, _ := time.Parse(time.RFC3339, "2015-04-17T04:00:00Z")
 	assert.Equal(t, endtime, appointments[1].End)
 }
+
+func TestToAppointment(t *testing.T) {
+	// TODO, Finish this test!!!
+	item := CalendarItem{
+		Subject: "Hello there!",
+	}
+	app := item.ToAppointment()
+	assert.Equal(t, "Hello there!", app.Subject)
+}
