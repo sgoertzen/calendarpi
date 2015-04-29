@@ -1,8 +1,8 @@
 {
   "SyncMinutes": 1000,
   "WebServerPort": "10443",
-  "SSLCertificateFile": "certs/cert.pem",
-  "SSLPrivateKeyFile": "certs/key.pem",
+  "SSLCertificateFile": "testsetup/cert.pem",
+  "SSLPrivateKeyFile": "testsetup/key.pem",
   "OauthClientId": "fake.apps.googleusercontent.com",
   "OauthClientSecret": "fakesecret",
   "OauthRedirectURL": "https://calendarpi.fakedomain.com/oauth2callback",
