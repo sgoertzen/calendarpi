@@ -8,31 +8,27 @@ CalendarPi will sync calendar appointments between an Exchange Server and Google
 
 
 ### Version
-0.1.0
+0.5.0
 
 This software is not fully functional but is actively being developed.  
 
 ## Setup Instructions
-Download and install Go from https://golang.org/dl/ or from source by running:
+Download and install Go from https://golang.org/dl/
+Set your GOPATH variable to whatever you want
 ```sh
-git clone https://go.googlesource.com/go
-cd go
-git checkout go1.4
-cd src
-./all.bash
+export GOPATH=~/GoPath
 ```
-
-Download and install Mecurial by running:
+Install calendarpi by running
 ```sh
-sudo apt-get install mercurial
+go get github.com/sgoertzen/calendarpi
 ```
-
-Run the following commands in terminal
+Install all dependencies by running
 ```sh
-go get google.golang.org/api/calendar/v3
-go get golang.org/x/oauth2
-go get github.com/stretchr/testify/assert
-go get github.com/kennygrant/sanitize
+go get -t ./...
+```
+Finally switch to the code directory
+```sh
+cd $GOPATH/src/github.com/sgoertzen/calendarpi
 ```
 
 ## To build:
@@ -55,3 +51,25 @@ The first time the software runs it will error out and create a conf.json file i
 
 ## Usage
 Once the software is running point your browser to https://yourmachinename:10443/ (Or whatever port you put into the config file)
+
+## Installing Go from source
+If you are so inclined you can install go from source
+```sh
+git clone https://go.googlesource.com/go
+cd go
+git checkout go1.4
+cd src
+./all.bash
+```
+Download and install Mecurial by running:
+```sh
+sudo apt-get install mercurial
+```
+
+Run the following commands in terminal
+```sh
+go get google.golang.org/api/calendar/v3
+go get golang.org/x/oauth2
+go get github.com/stretchr/testify/assert
+go get github.com/kennygrant/sanitize
+```

@@ -10,10 +10,10 @@ func TestBuildDiffListsEmpty(t *testing.T) {
 	apps := []Appointment{}
 	events := calendar.Events{}
 
-	addEvents, editEvents, err := buildDiffLists(apps, &events)
+	actions, err := buildDiffLists(apps, &events)
 	assert.Nil(t, err)
-	assert.Equal(t, 0, len(addEvents))
-	assert.Equal(t, 0, len(editEvents))
+	assert.Equal(t, 0, len(actions.toAdd))
+	assert.Equal(t, 0, len(actions.toUpdate))
 }
 
 func TestBuildDiffListsAllNew(t *testing.T) {
@@ -27,13 +27,51 @@ func TestBuildDiffListsAllNew(t *testing.T) {
 	}
 	events := calendar.Events{}
 
-	addEvents, editEvents, err := buildDiffLists(apps, &events)
+	actions, err := buildDiffLists(apps, &events)
 	assert.Nil(t, err)
-	assert.Equal(t, 1, len(addEvents))
-	assert.Equal(t, "sub", addEvents[0].Summary)
-	assert.Equal(t, "loc", addEvents[0].Location)
-	assert.Equal(t, "\nbody", addEvents[0].Description)
-	assert.Equal(t, 0, len(editEvents))
+	assert.Equal(t, 1, len(actions.toAdd))
+	assert.Equal(t, "sub", actions.toAdd[0].Summary)
+	assert.Equal(t, "loc", actions.toAdd[0].Location)
+	assert.Equal(t, "\nbody", actions.toAdd[0].Description)
+	assert.Equal(t, 0, len(actions.toUpdate))
+	assert.Equal(t, 0, len(actions.toDelete))
+}
+
+func TestBuildDiffListsDelete(t *testing.T) {
+	apps := []Appointment{}
+	events := calendar.Events{
+		Items: []*calendar.Event{
+			&calendar.Event{
+				Id: "45",
+				ExtendedProperties: &calendar.EventExtendedProperties{
+					Private: map[string]string{"ItemId":"45"},
+				},
+			},
+		},
+	}
+
+	actions, err := buildDiffLists(apps, &events)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(actions.toDelete))
+	assert.Equal(t, "45", actions.toDelete[0].Id)
+	assert.Equal(t, 0, len(actions.toUpdate))
+	assert.Equal(t, 0, len(actions.toAdd))
+}
+
+func TestBuildDiffListsLeaveExisting(t *testing.T) {
+	apps := []Appointment{}
+	events := calendar.Events{
+		Items: []*calendar.Event{
+			&calendar.Event{
+				Id: "45",
+				// Note: No extended properties on here.  Indicates not our event.
+			},
+		},
+	}
+
+	actions, err := buildDiffLists(apps, &events)
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(actions.toDelete))
 }
 
 func TestPopulateEventEmpty(t *testing.T) {

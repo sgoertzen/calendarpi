@@ -7,9 +7,15 @@ import (
 	"time"
 )
 
+type EventActions struct {
+	toAdd []*calendar.Event
+	toUpdate []*calendar.Event
+	toDelete []*calendar.Event
+}
+
 func mergeEvents(user User, appointments []Appointment, events *calendar.Events) error {
 
-	addEvents, editEvents, err := buildDiffLists(appointments, events)
+	actions, err := buildDiffLists(appointments, events)
 
 	client := getClient(user)
 	srv, err := calendar.New(client)
@@ -17,44 +23,60 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		log.Fatalf("Unable to retrieve calendar Client %v", err)
 		return err
 	}
-	log.Println(srv)
-	for _, event := range addEvents {
-		retevent, err := srv.Events.Insert(user.GCalid, event).Do()
+
+	for _, event := range actions.toAdd {
+		_, err := srv.Events.Insert(user.GCalid, event).Do()
 		if err != nil {
 			log.Println(err)
 			return err
 		}
-		log.Println(retevent)
 	}
-	for _, edit := range editEvents {
-		//log.Println("Would update event ", edit.Summary)
-		srv.Events.Patch(user.GCalid, edit.Id, edit).Do()
+	for _, edit := range actions.toUpdate {
+		_, err := srv.Events.Patch(user.GCalid, edit.Id, edit).Do()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+	}
+	for _, del := range actions.toDelete {
+		err := srv.Events.Delete(user.GCalid, del.Id).Do()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
 	}
 	return nil
 }
 
-func buildDiffLists(appointments []Appointment, events *calendar.Events) ([]*calendar.Event, []*calendar.Event, error) {
-
+func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventActions, error) {
 	var itemMap = make(map[string]*calendar.Event)
 	for _, event := range events.Items {
+		if event.ExtendedProperties == nil || len(event.ExtendedProperties.Private["ItemId"]) == 0{
+			// Skip this as it isn't one of our calendar appointments
+			continue
+		}
 		itemMap[event.ExtendedProperties.Private["ItemId"]] = event
 	}
 
-	var addEvents []*calendar.Event
-	var editEvents []*calendar.Event
-	log.Printf("Looping over %d appointments", len(appointments))
+	var eventActions EventActions
 	for _, app := range appointments {
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
 			log.Println("Skipping due to appointment already existing")
-			editEvents = append(editEvents, existingEvent)
+			// todo remove from map
+			delete(itemMap, app.ItemId)
+			eventActions.toUpdate = append(eventActions.toUpdate, existingEvent)
 			continue
 		}
-		event := calendar.Event{}
-		populateEvent(&event, &app)
-		addEvents = append(addEvents, &event)
+		e := calendar.Event{}
+		populateEvent(&e, &app)
+		eventActions.toAdd = append(eventActions.toAdd, &e)
 	}
-	return addEvents, editEvents, nil
+	for _, e := range itemMap {
+		// todo put into del map
+		eventActions.toDelete = append(eventActions.toDelete, e)
+	}
+	return eventActions, nil
 }
 
 func populateEvent(e *calendar.Event, a *Appointment) {
