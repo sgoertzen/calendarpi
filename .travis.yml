@@ -10,7 +10,5 @@ script:
  - go build
  - go test -v ./...                       # Run unit tests (verbose output)
  - cp testsetup/test.conf.json conf.json  # Put our test config in place
- - cp testsetup/*.pem certs/              # Put out test certs in place
  - ./calendarpi &                         # Run ourself in the background
  - cuke-monkey                            # Run our selenium tests
- #- pkill calendarpi # Kill the ourself
