@@ -1,13 +1,20 @@
 language: go
 go:
  - 1.4.2
- - tip
 
 install:
   - go get google.golang.org/api/calendar/v3
   - go get golang.org/x/oauth2/...
   - go get github.com/stretchr/testify/assert
   - go get github.com/kennygrant/sanitize
+  - npm install cuke-monkey -g
 
 script:
- - go test -v ./...
+ - go build
+ - go test -v ./... # Run unit tests (verbose output)
+ #- ./calendarpi &   # Run ourself in the background
+ - cuke-monkey      # Run our selenium tests
+ #- pkill calendarpi # Kill the ourself
+
+# TODO ********
+# Remove a cached dependency and see if go downloads it automatically

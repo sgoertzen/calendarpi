@@ -22,7 +22,7 @@ func TestBuildDiffListsAllNew(t *testing.T) {
 			ItemId:   "Hello",
 			Subject:  "sub",
 			Location: "loc",
-      Body: "<html><body><b>body</b></body></html>",
+			Body:     "<html><body><b>body</b></body></html>",
 		},
 	}
 	events := calendar.Events{}
@@ -37,24 +37,24 @@ func TestBuildDiffListsAllNew(t *testing.T) {
 }
 
 func TestPopulateEventEmpty(t *testing.T) {
-	e := calendar.Event {}
+	e := calendar.Event{}
 	a := Appointment{
-			Subject:  "42",
-			ItemId: "uniqueId",
-		}
+		Subject: "42",
+		ItemId:  "uniqueId",
+	}
 	populateEvent(&e, &a)
 	assert.Equal(t, "42", e.Summary)
 	assert.Equal(t, "uniqueId", e.ExtendedProperties.Private["ItemId"])
 }
 
 func TestPopulateEventExisting(t *testing.T) {
-	e := calendar.Event {
-		Id: "train",
+	e := calendar.Event{
+		Id:      "train",
 		Summary: "blah",
 	}
 	a := Appointment{
-		Subject:  "42",
-		ItemId: "uniqueId",
+		Subject: "42",
+		ItemId:  "uniqueId",
 	}
 	populateEvent(&e, &a)
 	assert.Equal(t, "42", e.Summary)
@@ -63,7 +63,7 @@ func TestPopulateEventExisting(t *testing.T) {
 }
 
 func TestBuildBody(t *testing.T) {
-expected := 	`Organizer: minifig
+	expected := `Organizer: minifig
 To: deadpool
 Cc: batman
 
@@ -71,11 +71,11 @@ body
 body2`
 
 	app := Appointment{
-			To:  "deadpool",
-			Cc:  "batman",
-			Organizer: "minifig",
-			Body: "<html><body><b>body</b><br/>body2</body></html>",
-		}
+		To:        "deadpool",
+		Cc:        "batman",
+		Organizer: "minifig",
+		Body:      "<html><body><b>body</b><br/>body2</body></html>",
+	}
 	desc := buildDesc(&app)
 	assert.Equal(t, expected, desc)
 }

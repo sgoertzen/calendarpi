@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/kennygrant/sanitize"
 	"google.golang.org/api/calendar/v3"
 	"log"
 	"time"
-	"github.com/kennygrant/sanitize"
 )
 
 func mergeEvents(user User, appointments []Appointment, events *calendar.Events) error {
@@ -57,14 +57,13 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) ([]*cal
 	return addEvents, editEvents, nil
 }
 
-
 func populateEvent(e *calendar.Event, a *Appointment) {
 	var eventStart, eventEnd calendar.EventDateTime
 	if a.IsAllDayEvent {
-		eventStart = calendar.EventDateTime{ Date: a.Start.Format("2006-01-02"), }
+		eventStart = calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
 	} else {
-		eventStart = calendar.EventDateTime{ DateTime: a.Start.Format(time.RFC3339),}
-		eventEnd = calendar.EventDateTime{ DateTime: a.End.Format(time.RFC3339), }
+		eventStart = calendar.EventDateTime{DateTime: a.Start.Format(time.RFC3339)}
+		eventEnd = calendar.EventDateTime{DateTime: a.End.Format(time.RFC3339)}
 	}
 
 	e.Summary = a.Subject
@@ -80,7 +79,7 @@ func populateEvent(e *calendar.Event, a *Appointment) {
 func buildDesc(a *Appointment) string {
 	var desc = ""
 
-	addField := func(field string, label string){
+	addField := func(field string, label string) {
 		if len(field) > 0 {
 			desc += label + " " + field + "\n"
 		}
