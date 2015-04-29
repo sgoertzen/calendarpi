@@ -3,10 +3,10 @@ go:
  - 1.4.2
 
 install:
-  - go get google.golang.org/api/calendar/v3
-  - go get golang.org/x/oauth2/...
-  - go get github.com/stretchr/testify/assert
-  - go get github.com/kennygrant/sanitize
+  #- go get google.golang.org/api/calendar/v3
+  #- go get golang.org/x/oauth2/...
+  #- go get github.com/stretchr/testify/assert
+  #- go get github.com/kennygrant/sanitize
   - npm install cuke-monkey -g
 
 script:
