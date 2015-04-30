@@ -142,8 +142,8 @@ Where: call-in details below
                      <t:MyResponseType>Accept</t:MyResponseType>
                      <t:Organizer>
                         <t:Mailbox>
-                           <t:Name>Titus, Jeff</t:Name>
-                           <t:EmailAddress>extern.Jeff.Titus@audi.com</t:EmailAddress>
+                           <t:Name>Blah Tim</t:Name>
+                           <t:EmailAddress>blah@here.com</t:EmailAddress>
                            <t:RoutingType>SMTP</t:RoutingType>
                         </t:Mailbox>
                      </t:Organizer>
@@ -167,10 +167,38 @@ Where: call-in details below
 }
 
 func TestToAppointment(t *testing.T) {
-	// TODO, Finish this test!!!
 	item := CalendarItem{
 		Subject: "Hello there!",
+      DisplayCc: "ccs",
+      DisplayTo: "tos",
+      IsAllDayEvent: false,
+      Location: "loc",
+      Start: "2015-04-30T15:00:00Z",
+      End: "2015-04-30T16:00:00Z",
+      MyResponseType: "Organizer",
+      ItemId: ItemId{
+         Id: "567",
+         ChangeKey: "234",
+      },
+      Body: Body{
+         Body: "something",
+         BodyType: "HTML",
+      },
 	}
+   
+   start, _ := time.Parse(time.RFC3339, "2015-04-30T15:00:00Z")
+   end, _ := time.Parse(time.RFC3339, "2015-04-30T16:00:00Z")
+   
 	app := item.ToAppointment()
+	assert.Equal(t, "567", app.ItemId)
+	assert.Equal(t, "234", app.ChangeKey)
 	assert.Equal(t, "Hello there!", app.Subject)
+	assert.Equal(t, "ccs", app.Cc)
+	assert.Equal(t, "tos", app.To)
+	assert.Equal(t, false, app.IsAllDayEvent)
+	assert.Equal(t, "loc", app.Location)
+	assert.Equal(t, "something", app.Body)
+	assert.Equal(t, "HTML", app.BodyType)
+	assert.Equal(t, start, app.Start)
+	assert.Equal(t, end, app.End)
 }
