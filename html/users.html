@@ -21,7 +21,7 @@
           <td><div data-date="{{ .Datecreated }}"></div></td>
           <td><div data-date="{{ .LastSync }}"></div></td>
           <td>{{ .State }}</td>
-          <td><a href="/delete?username={{ .Username }}">Delete</a></td>
+          <td><a href="/sync?username={{ .Username }}">Sync</a> <a href="/delete?username={{ .Username }}">Delete</a></td>
         </tr>
         {{ end }}
       {{ end }}
@@ -31,7 +31,6 @@
       {{ end }}
     </table>
     <a href="/add" class="btn red">Register</a>
-    <a href="/logic">Run Logic (test)</a>
     <script>
       // Once we are loaded then format and show the dates
       $(document).ready(function() {

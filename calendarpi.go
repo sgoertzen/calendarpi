@@ -9,20 +9,13 @@ import (
 )
 
 /*
-TODO
-How are we going to show status of syncs and display errors
-Allow sync to happen immediately on new accounts but scheduled after that
-
-Give option to choose calendar or create a new one
-
-Look into using mux for routing
-Put files into different packages
-
+TODO: Finish date detection for test TestPopulateEventExistingNoChanges.  Currently it ignores date changes.
+TODO: Only allow /scripts, /css, and /images to be downloaded
+TOOD: Finish TestToAppointment in soapparser_test.go
+TODO: Show status on main page.  Remove status and add last sync status columsn with "Never synced", "Syncing", "Error", "Successful"
 TODO: When adding disable button and show spinner
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
-
-TODO: support adding a new calendar
-To add a new calendar to srv.Insert(calendar) - returns CalendarsInsertCall
+TODO: support adding a new calendar (To add a new calendar to srv.Insert(calendar) - returns CalendarsInsertCall)
 */
 
 const configfile = "conf.json"

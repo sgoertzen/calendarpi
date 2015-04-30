@@ -48,6 +48,8 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 			return err
 		}
 	}
+	user.LastSync = time.Now()
+	user.Save()
 	return nil
 }
 
@@ -65,7 +67,11 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
 			delete(itemMap, app.ItemId)
-			eventActions.toUpdate = append(eventActions.toUpdate, existingEvent)
+			newEvent := calendar.Event{}
+			changes := populateEvent(&newEvent, &app)
+			if changes {
+				eventActions.toUpdate = append(eventActions.toUpdate, existingEvent)
+			}
 			continue
 		}
 		e := calendar.Event{}
@@ -75,10 +81,12 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 	for _, e := range itemMap {
 		eventActions.toDelete = append(eventActions.toDelete, e)
 	}
+	log.Println("Total events: ", len(events.Items))
+	log.Println("Count of updated events: ", len(eventActions.toUpdate))
 	return eventActions, nil
 }
 
-func populateEvent(e *calendar.Event, a *Appointment) {
+func populateEvent(e *calendar.Event, a *Appointment) bool {
 	var eventStart, eventEnd calendar.EventDateTime
 	if a.IsAllDayEvent {
 		eventStart = calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
@@ -86,15 +94,33 @@ func populateEvent(e *calendar.Event, a *Appointment) {
 		eventStart = calendar.EventDateTime{DateTime: a.Start.Format(time.RFC3339)}
 		eventEnd = calendar.EventDateTime{DateTime: a.End.Format(time.RFC3339)}
 	}
+	var changes = false
 
+	desc := buildDesc(a)
+	
+	if e.Summary != a.Subject {
+		log.Println("Subjects are different.  Summary vs Subject ", e.Summary, a.Subject)
+		changes = true
+	}
+	if e.Location != a.Location {
+		log.Println("Locations are different.  GCal vs Exchange ", e.Location, a.Location)
+		changes = true
+	}
+	if e.Description != desc {
+		log.Println("Descriptions are different.  GCal vs Exchange ", e.Description, desc)
+		changes = true
+	}
+	//e.Start.Date != eventStart.Date ||
+	//e.End != &eventEnd ||
 	e.Summary = a.Subject
 	e.Location = a.Location
 	e.Start = &eventStart
 	e.End = &eventEnd
-	e.Description = buildDesc(a)
+	e.Description = desc
 	e.ExtendedProperties = &calendar.EventExtendedProperties{
 		Private: map[string]string{"ItemId": a.ItemId},
 	}
+	return changes
 }
 
 func buildDesc(a *Appointment) string {

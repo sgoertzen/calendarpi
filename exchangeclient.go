@@ -81,7 +81,6 @@ func buildCalendarDetailRequest(itemIds []Appointment) []byte {
 	if err != nil {
 		log.Printf("Error while building contents ", err)
 	}
-
 	return doc.Bytes()
 }
 
@@ -89,8 +88,8 @@ func getExchangeCalendarData(user User) string {
 	soapRequest := buildCalendarItemRequest(user.Folderid, user.Changekey)
 	soapResponse, err := postContents(soapRequest, user)
 	if err != nil {
-		log.Println("Error while getting soap response")
-		log.Fatal(err)
+		log.Println("Error while getting soap response", err)
+		return ""
 	}
 	return soapResponse
 }

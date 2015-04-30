@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 	"time"
 )
@@ -102,6 +103,67 @@ func TestParseAppointments(t *testing.T) {
 	assert.Equal(t, starttime, appointments[1].Start)
 	endtime, _ := time.Parse(time.RFC3339, "2015-04-17T04:00:00Z")
 	assert.Equal(t, endtime, appointments[1].End)
+}
+
+func TestParseWithBody(t *testing.T) {
+	results := `
+<?xml version="1.0" encoding="UTF-8"?>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+   <s:Header>
+      <h:ServerVersionInfo xmlns:h="http://schemas.microsoft.com/exchange/services/2006/types" xmlns="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" MajorVersion="14" MinorVersion="3" MajorBuildNumber="210" MinorBuildNumber="2" />
+   </s:Header>
+   <s:Body xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <m:GetItemResponse xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+         <m:ResponseMessages>
+            <m:GetItemResponseMessage ResponseClass="Success">
+               <m:ResponseCode>NoError</m:ResponseCode>
+               <m:Items>
+                  <t:CalendarItem>
+                     <t:ItemId Id="abklajfjdBgAAAHUygwAAEA==" ChangeKey="DwcWd" />
+                     <t:Subject>Status</t:Subject>
+                     <t:Body BodyType="HTML">&lt;html&gt;&#xD;
+&lt;head&gt;&#xD;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;&#xD;
+&lt;/head&gt;&#xD;
+&lt;body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; color: rgb(0, 0, 0); font-size: 14px; font-family: Calibri, sans-serif; "&gt;&#xD;
+&lt;tt&gt;&#xD;
+&lt;pre&gt;When: Thursday, April 30, 2015 11:00 AM-12:00 PM. (UTC-05:00) Eastern Time (US &amp;amp; Canada)
+Where: call-in details below
+
+*~*~*~*~*~*~*~*~*~*
+&lt;/pre&gt;&#xD;
+&lt;/tt&gt;&#xD;
+&lt;/body&gt;&#xD;
+&lt;/html&gt;</t:Body>
+                     <t:Start>2015-04-30T15:00:00Z</t:Start>
+                     <t:End>2015-04-30T16:00:00Z</t:End>
+                     <t:IsAllDayEvent>false</t:IsAllDayEvent>
+                     <t:Location>call-in details below</t:Location>
+                     <t:MyResponseType>Accept</t:MyResponseType>
+                     <t:Organizer>
+                        <t:Mailbox>
+                           <t:Name>Titus, Jeff</t:Name>
+                           <t:EmailAddress>extern.Jeff.Titus@audi.com</t:EmailAddress>
+                           <t:RoutingType>SMTP</t:RoutingType>
+                        </t:Mailbox>
+                     </t:Organizer>
+                  </t:CalendarItem>
+               </m:Items>
+            </m:GetItemResponseMessage>
+         </m:ResponseMessages>
+      </m:GetItemResponse>
+   </s:Body>
+</s:Envelope>`
+
+	appointments := ParseAppointments(results)
+
+	assert.NotNil(t, appointments)
+	assert.Equal(t, 1, len(appointments))
+
+	app := appointments[0]
+	assert.Equal(t, "HTML", app.BodyType)
+	assert.True(t, len(app.Body) > 100)
+	assert.True(t, strings.HasPrefix(app.Body, "<html>"))
 }
 
 func TestToAppointment(t *testing.T) {

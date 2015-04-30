@@ -37,7 +37,7 @@ type CalendarItem struct {
 
 type Body struct {
 	BodyType string `xml:"BodyType,attr"`
-	Body     string
+	Body     string `xml:",chardata"`
 }
 
 type Appointment struct {

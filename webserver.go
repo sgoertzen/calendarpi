@@ -63,16 +63,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if !needskey(w) {
 			showCalendarSelectPage(w, r)
 		}
-	case "logic": // TESTING ONLY.  REMOVE!
-		user := GetUser("goertzs")
-		log.Println("Starting on user ", user.Username)
-		appointments := GetExchangeAppointments(user)
-		events, err := getGCalAppointments(user)
-		if err != nil {
-			log.Fatal(err)
+	case "sync":
+		if !needskey(w) {
+			syncUser(w, r)
 		}
-		mergeEvents(user, appointments, events)
-		redirectHome(w, r)
 	case "":
 		if !needskey(w) {
 			showUserList(w, r)
@@ -80,6 +74,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	default:
 		showFile(w, path)
 	}
+}
+
+func syncUser(w http.ResponseWriter, r *http.Request) {
+	m := r.URL.Query()
+	usernames := m["username"]
+	if len(usernames) == 0 {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+	username := usernames[0]
+	user := GetUser(username)
+	log.Println("Starting on user ", user.Username)
+	appointments := GetExchangeAppointments(user)
+	events, err := getGCalAppointments(user)
+	if err != nil {
+		log.Fatal(err)
+	}
+	mergeEvents(user, appointments, events)
+	redirectHome(w, r)
 }
 
 func needskey(w http.ResponseWriter) bool {

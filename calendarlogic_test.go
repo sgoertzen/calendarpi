@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/calendar/v3"
 	"testing"
+	"time"
 )
 
 func TestBuildDiffListsEmpty(t *testing.T) {
@@ -94,10 +95,29 @@ func TestPopulateEventExisting(t *testing.T) {
 		Subject: "42",
 		ItemId:  "uniqueId",
 	}
-	populateEvent(&e, &a)
+	changes := populateEvent(&e, &a)
+	assert.Equal(t, true, changes)
 	assert.Equal(t, "42", e.Summary)
 	assert.Equal(t, "train", e.Id)
 	assert.Equal(t, "uniqueId", e.ExtendedProperties.Private["ItemId"])
+}
+
+func TestPopulateEventExistingNoChanges(t *testing.T) {
+	e := calendar.Event{
+		Id:      "123",
+		Summary: "phone call",
+		Description: "\n",
+		Start: &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
+	}
+	t1, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
+	a := Appointment{
+		Subject: "phone call",
+		ItemId:  "123",
+		Start: t1,
+		IsAllDayEvent: false,
+	}
+	changes := populateEvent(&e, &a)
+	assert.False(t, changes)
 }
 
 func TestBuildDescription(t *testing.T) {
