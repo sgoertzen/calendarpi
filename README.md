@@ -6,12 +6,19 @@ CalendarPi will sync calendar appointments between an Exchange Server and Google
 [![Coverage Status](https://coveralls.io/repos/sgoertzen/calendarpi/badge.svg)](https://coveralls.io/r/sgoertzen/calendarpi)
 [![Author Badge](https://img.shields.io/badge/awesome-totally-green.svg)](https://github.com/sgoertzen)
 
+CalendarPi is a small website that allows users to sync their exchange calenders with google calendar.  Multiple users can all use the software and it will maintain each calenadr separately.  
 
+![Screenshot](https://github.com/sgoertzen/calendarpi/blob/master/images/ScreenShot.png)
+
+### Details
+CalendarPi supports one directional sync from Exchange to Google Calendar.  It does support new, changed and deleted events.
+
+### Security
+CalendarPi secures all credentials by storing them in an encrypted file locally.  The master password for encrypting and decrypting is never stored on the system.  It must be entered each time the software starts up and is just kept in memory.  This prohibts anyone who has physical access to the machine from recovering any sensitive data.
 
 ### Version
-0.5.0
+1.0.0
 
-This software is not fully functional but is actively being developed.  
 
 ## Setup Instructions
 Download and install Go from https://golang.org/dl/
