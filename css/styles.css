@@ -44,6 +44,10 @@ table.table-style-three td {
 .red:hover {
   background-color: #FF6656;
 }
+.disabled {
+  background-color: #999999;
+  box-shadow: 3px 3px 2px 0 #AAAAAA;
+}
 .errorMessage{
   background-color: red;
   font-size:28px;

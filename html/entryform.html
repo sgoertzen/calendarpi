@@ -13,13 +13,24 @@
     <form id="mainform" action="/saveuser" method="post">
       <span>Exchange Login: </span><input name="username" type="text"></input>
       <span>Exchange Password: </span><input name="password" type="password"></input>
-      <span></span><button class="btn red" onclick="submitform">Save and continue</button>
+      <span></span><button id="saveBtn" class="btn red" onclick="submitform">Save and continue</button>
     </form>
     <script>
+      var submitted = false;
+
       function submitform(){
+        if (submitted) {
+          return false;
+        }
         // TODO: Validate the form!
+        submitted = true;
+        $(".saveBtn").removeClass("red").addClass("disabled");
         document.forms["mainform"].submit();
       }
+
+      $(document).ready(function() {
+        $("input:visible:first").focus();
+      });
     </script>
   </body>
 </html>

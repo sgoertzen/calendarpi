@@ -32,7 +32,6 @@ func RunServer(conf WebConfig) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-
 	path := r.URL.Path[1:]
 
 	switch path {
@@ -67,9 +66,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case "logic": // TESTING ONLY.  REMOVE!
 		user := GetUser("goertzs")
 		log.Println("Starting on user ", user.Username)
-
 		appointments := GetExchangeAppointments(user)
-
 		events, err := getGCalAppointments(user)
 		if err != nil {
 			log.Fatal(err)

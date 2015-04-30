@@ -44,7 +44,7 @@ func TestBuildDiffListsDelete(t *testing.T) {
 			&calendar.Event{
 				Id: "45",
 				ExtendedProperties: &calendar.EventExtendedProperties{
-					Private: map[string]string{"ItemId":"45"},
+					Private: map[string]string{"ItemId": "45"},
 				},
 			},
 		},
@@ -100,7 +100,7 @@ func TestPopulateEventExisting(t *testing.T) {
 	assert.Equal(t, "uniqueId", e.ExtendedProperties.Private["ItemId"])
 }
 
-func TestBuildBody(t *testing.T) {
+func TestBuildDescription(t *testing.T) {
 	expected := `Organizer: minifig
 To: deadpool
 Cc: batman

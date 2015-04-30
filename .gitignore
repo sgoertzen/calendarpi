@@ -2,4 +2,5 @@ blabbersnatzle.bak
 calendarpi
 certs/**
 conf.json
+coverage.out
 .DS_Store

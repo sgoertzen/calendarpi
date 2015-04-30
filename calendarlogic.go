@@ -8,7 +8,7 @@ import (
 )
 
 type EventActions struct {
-	toAdd []*calendar.Event
+	toAdd    []*calendar.Event
 	toUpdate []*calendar.Event
 	toDelete []*calendar.Event
 }
@@ -20,18 +20,20 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 	client := getClient(user)
 	srv, err := calendar.New(client)
 	if err != nil {
-		log.Fatalf("Unable to retrieve calendar Client %v", err)
+		log.Println("Unable to retrieve calendar Client %v", err)
 		return err
 	}
 
-	for _, event := range actions.toAdd {
-		_, err := srv.Events.Insert(user.GCalid, event).Do()
+	for _, add := range actions.toAdd {
+		log.Println("Adding event of ", add.Summary)
+		_, err := srv.Events.Insert(user.GCalid, add).Do()
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 	}
 	for _, edit := range actions.toUpdate {
+		log.Println("Updating event of ", edit.Summary)
 		_, err := srv.Events.Patch(user.GCalid, edit.Id, edit).Do()
 		if err != nil {
 			log.Println(err)
@@ -39,6 +41,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		}
 	}
 	for _, del := range actions.toDelete {
+		log.Println("Deleting event " + del.Summary)
 		err := srv.Events.Delete(user.GCalid, del.Id).Do()
 		if err != nil {
 			log.Println(err)
@@ -51,8 +54,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventActions, error) {
 	var itemMap = make(map[string]*calendar.Event)
 	for _, event := range events.Items {
-		if event.ExtendedProperties == nil || len(event.ExtendedProperties.Private["ItemId"]) == 0{
-			// Skip this as it isn't one of our calendar appointments
+		if event.ExtendedProperties == nil || len(event.ExtendedProperties.Private["ItemId"]) == 0 {
 			continue
 		}
 		itemMap[event.ExtendedProperties.Private["ItemId"]] = event
@@ -62,8 +64,6 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 	for _, app := range appointments {
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
-			log.Println("Skipping due to appointment already existing")
-			// todo remove from map
 			delete(itemMap, app.ItemId)
 			eventActions.toUpdate = append(eventActions.toUpdate, existingEvent)
 			continue
@@ -73,7 +73,6 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 		eventActions.toAdd = append(eventActions.toAdd, &e)
 	}
 	for _, e := range itemMap {
-		// todo put into del map
 		eventActions.toDelete = append(eventActions.toDelete, e)
 	}
 	return eventActions, nil
