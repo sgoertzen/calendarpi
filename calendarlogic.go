@@ -65,8 +65,6 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
 			delete(itemMap, app.ItemId)
-			//newEvent := calendar.Event{}
-			//newEvent.Id = existingEvent.Id
 			changes := populateEvent(existingEvent, &app)
 			if changes {
 				eventActions.toUpdate = append(eventActions.toUpdate, existingEvent)
@@ -80,8 +78,6 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 	for _, e := range itemMap {
 		eventActions.toDelete = append(eventActions.toDelete, e)
 	}
-	log.Println("Total events: ", len(events.Items))
-	log.Println("Count of updated events: ", len(eventActions.toUpdate))
 	return eventActions, nil
 }
 
@@ -89,20 +85,17 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 	var changes = false
 
 	if e.Summary != a.Subject {
-		log.Println("Subjects are different.  Summary vs Subject ", e.Summary, a.Subject)
 		e.Summary = a.Subject
 		changes = true
 	}
 
 	if e.Location != a.Location {
-		log.Println("Locations are different.  GCal vs Exchange ", e.Location, a.Location)
 		e.Location = a.Location
 		changes = true
 	}
 
 	desc := buildDesc(a)
 	if e.Description != desc {
-		log.Println("Descriptions are different.  GCal vs Exchange ", e.Description, desc)
 		e.Description = desc
 		changes = true
 	}
@@ -110,28 +103,23 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 	var eventStart, eventEnd calendar.EventDateTime
 	if a.IsAllDayEvent {
 		eventStart = calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
-		if e.Start != nil && e.Start.Date != eventStart.Date {
-			log.Println("Starts are different.  GCal vs Exchange ")
-			log.Println("GCal ", e.Start.Date)
-			log.Println("Exchange ", eventStart.Date)
+		if e.Start == nil && e.Start.Date != eventStart.Date {
+			e.Start = &eventStart
 			changes = true
 		}
-		e.Start = &eventStart
 	} else {
 		eventStart = calendar.EventDateTime{DateTime: a.Start.Format(time.RFC3339)}
 		eventEnd = calendar.EventDateTime{DateTime: a.End.Format(time.RFC3339)}
-		if e.Start != nil && e.Start.DateTime != eventStart.DateTime {
-			log.Println("Starts are different.  GCal vs Exchange ")
-			log.Println("GCal ", e.Start.Date)
-			log.Println("Exchange ", eventStart.Date)
+		if e.Start == nil || e.Start.DateTime != eventStart.DateTime {
+			e.Start = &eventStart
 			changes = true
 		}
-		e.Start = &eventStart
-		e.End = &eventEnd
-
+		if e.End == nil || e.End.DateTime != eventEnd.DateTime {
+			e.End = &eventEnd
+			changes = true
+		}
 	}
 
-	//e.End != &eventEnd ||
 	e.ExtendedProperties = &calendar.EventExtendedProperties{
 		Private: map[string]string{"ItemId": a.ItemId},
 	}

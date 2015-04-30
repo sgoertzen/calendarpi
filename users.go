@@ -17,15 +17,15 @@ const (
 )
 
 type User struct {
-	Username    string
-	Password    string
-	Token       *oauth2.Token
-	Datecreated time.Time
-	LastSync    time.Time
-	Folderid    string
-	Changekey   string
-	GCalid      string
-	State       string
+	Username     string
+	Password     string
+	Token        *oauth2.Token
+	Datecreated  time.Time
+	LastSync     time.Time
+	Folderid     string
+	Changekey    string
+	GCalid       string
+	State        string
 }
 
 type Serializer func([]User) error
@@ -38,7 +38,7 @@ func (u User) Save() error {
 		m = make(map[string]User)
 	}
 
-	log.Printf("Storing user of %s", u.Username)
+	log.Printf("Storing user: '%s'", u.Username)
 	t := time.Time{}
 	if u.Datecreated == t {
 		u.Datecreated = time.Now()
@@ -73,7 +73,7 @@ func GetUsers() []User {
 }
 
 func DeleteUser(username string) error {
-	log.Printf("Removing user of %s", username)
+	log.Printf("Removing user: '%s'", username)
 	delete(m, username)
 	err := serializeUsers(GetUsers())
 	if err != nil {

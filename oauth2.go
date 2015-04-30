@@ -36,19 +36,13 @@ func getClient(user User) *http.Client {
 }
 
 func tryOAuth2(w http.ResponseWriter, r *http.Request, user User) {
-	log.Println("Starting OAuth2")
-
-	url := conf.AuthCodeURL(user.Username)
-	log.Println("Going to %v", url)
+	url := conf.AuthCodeURL(user.Username, oauth2.AccessTypeOffline)
 	http.Redirect(w, r, string(url), 302)
 }
 
 func handleOAuthResponse(w http.ResponseWriter, r *http.Request) (User, error) {
 	username := r.URL.Query().Get("state")
-	log.Printf("Username is: %s", username)
-
 	code := r.URL.Query().Get("code")
-	log.Printf("Code is: %s", code)
 	// Exchanging the code for a token
 	token, err := conf.Exchange(oauth2.NoContext, code)
 	if err != nil {

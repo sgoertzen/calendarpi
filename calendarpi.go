@@ -52,8 +52,8 @@ func runSyncLoop(config Config) {
 		users := GetUsers()
 		for _, user := range users {
 			user.State = syncing
-			user.Save() 
-			
+			user.Save()
+
 			appointments := GetExchangeAppointments(user)
 			log.Println("len:", len(appointments))
 			events, err := getGCalAppointments(user)
