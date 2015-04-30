@@ -104,20 +104,38 @@ func TestPopulateEventExisting(t *testing.T) {
 
 func TestPopulateEventExistingNoChanges(t *testing.T) {
 	e := calendar.Event{
-		Id:      "123",
-		Summary: "phone call",
+		Id:          "123",
+		Summary:     "phone call",
 		Description: "\n",
-		Start: &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
+		Start:       &calendar.EventDateTime{DateTime: "2015-04-13T16:00:00Z"},
 	}
 	t1, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
 	a := Appointment{
-		Subject: "phone call",
-		ItemId:  "123",
-		Start: t1,
+		Subject:       "phone call",
+		ItemId:        "123",
+		Start:         t1,
 		IsAllDayEvent: false,
 	}
 	changes := populateEvent(&e, &a)
 	assert.False(t, changes)
+}
+
+func TestPopulateEventExistingStartChange(t *testing.T) {
+	e := calendar.Event{
+		Id:          "123",
+		Summary:     "phone call",
+		Description: "\n",
+		Start:       &calendar.EventDateTime{DateTime: "2015-04-12T16:00:00Z"},
+	}
+	t1, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
+	a := Appointment{
+		Subject:       "phone call",
+		ItemId:        "123",
+		Start:         t1,
+		IsAllDayEvent: false,
+	}
+	changes := populateEvent(&e, &a)
+	assert.True(t, changes)
 }
 
 func TestBuildDescription(t *testing.T) {

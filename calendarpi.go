@@ -9,7 +9,6 @@ import (
 )
 
 /*
-TODO: Finish date detection for test TestPopulateEventExistingNoChanges.  Currently it ignores date changes.
 TODO: Only allow /scripts, /css, and /images to be downloaded
 TOOD: Finish TestToAppointment in soapparser_test.go
 TODO: Show status on main page.  Remove status and add last sync status columsn with "Never synced", "Syncing", "Error", "Successful"

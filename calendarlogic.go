@@ -34,7 +34,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 	}
 	for _, edit := range actions.toUpdate {
 		log.Println("Updating event of ", edit.Summary)
-		_, err := srv.Events.Patch(user.GCalid, edit.Id, edit).Do()
+		_, err := srv.Events.Update(user.GCalid, edit.Id, edit).Do()
 		if err != nil {
 			log.Println(err)
 			return err
@@ -67,8 +67,9 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
 			delete(itemMap, app.ItemId)
-			newEvent := calendar.Event{}
-			changes := populateEvent(&newEvent, &app)
+			//newEvent := calendar.Event{}
+			//newEvent.Id = existingEvent.Id
+			changes := populateEvent(existingEvent, &app)
 			if changes {
 				eventActions.toUpdate = append(eventActions.toUpdate, existingEvent)
 			}
@@ -87,36 +88,52 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 }
 
 func populateEvent(e *calendar.Event, a *Appointment) bool {
+	var changes = false
+
+	if e.Summary != a.Subject {
+		log.Println("Subjects are different.  Summary vs Subject ", e.Summary, a.Subject)
+		e.Summary = a.Subject
+		changes = true
+	}
+
+	if e.Location != a.Location {
+		log.Println("Locations are different.  GCal vs Exchange ", e.Location, a.Location)
+		e.Location = a.Location
+		changes = true
+	}
+
+	desc := buildDesc(a)
+	if e.Description != desc {
+		log.Println("Descriptions are different.  GCal vs Exchange ", e.Description, desc)
+		e.Description = desc
+		changes = true
+	}
+
 	var eventStart, eventEnd calendar.EventDateTime
 	if a.IsAllDayEvent {
 		eventStart = calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
+		if e.Start != nil && e.Start.Date != eventStart.Date {
+			log.Println("Starts are different.  GCal vs Exchange ")
+			log.Println("GCal ", e.Start.Date)
+			log.Println("Exchange ", eventStart.Date)
+			changes = true
+		}
+		e.Start = &eventStart
 	} else {
 		eventStart = calendar.EventDateTime{DateTime: a.Start.Format(time.RFC3339)}
 		eventEnd = calendar.EventDateTime{DateTime: a.End.Format(time.RFC3339)}
-	}
-	var changes = false
+		if e.Start != nil && e.Start.DateTime != eventStart.DateTime {
+			log.Println("Starts are different.  GCal vs Exchange ")
+			log.Println("GCal ", e.Start.Date)
+			log.Println("Exchange ", eventStart.Date)
+			changes = true
+		}
+		e.Start = &eventStart
+		e.End = &eventEnd
 
-	desc := buildDesc(a)
-	
-	if e.Summary != a.Subject {
-		log.Println("Subjects are different.  Summary vs Subject ", e.Summary, a.Subject)
-		changes = true
 	}
-	if e.Location != a.Location {
-		log.Println("Locations are different.  GCal vs Exchange ", e.Location, a.Location)
-		changes = true
-	}
-	if e.Description != desc {
-		log.Println("Descriptions are different.  GCal vs Exchange ", e.Description, desc)
-		changes = true
-	}
-	//e.Start.Date != eventStart.Date ||
+
 	//e.End != &eventEnd ||
-	e.Summary = a.Subject
-	e.Location = a.Location
-	e.Start = &eventStart
-	e.End = &eventEnd
-	e.Description = desc
 	e.ExtendedProperties = &calendar.EventExtendedProperties{
 		Private: map[string]string{"ItemId": a.ItemId},
 	}
