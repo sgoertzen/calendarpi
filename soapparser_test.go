@@ -168,27 +168,27 @@ Where: call-in details below
 
 func TestToAppointment(t *testing.T) {
 	item := CalendarItem{
-		Subject: "Hello there!",
-      DisplayCc: "ccs",
-      DisplayTo: "tos",
-      IsAllDayEvent: false,
-      Location: "loc",
-      Start: "2015-04-30T15:00:00Z",
-      End: "2015-04-30T16:00:00Z",
-      MyResponseType: "Organizer",
-      ItemId: ItemId{
-         Id: "567",
-         ChangeKey: "234",
-      },
-      Body: Body{
-         Body: "something",
-         BodyType: "HTML",
-      },
+		Subject:        "Hello there!",
+		DisplayCc:      "ccs",
+		DisplayTo:      "tos",
+		IsAllDayEvent:  false,
+		Location:       "loc",
+		Start:          "2015-04-30T15:00:00Z",
+		End:            "2015-04-30T16:00:00Z",
+		MyResponseType: "Organizer",
+		ItemId: ItemId{
+			Id:        "567",
+			ChangeKey: "234",
+		},
+		Body: Body{
+			Body:     "something",
+			BodyType: "HTML",
+		},
 	}
-   
-   start, _ := time.Parse(time.RFC3339, "2015-04-30T15:00:00Z")
-   end, _ := time.Parse(time.RFC3339, "2015-04-30T16:00:00Z")
-   
+
+	start, _ := time.Parse(time.RFC3339, "2015-04-30T15:00:00Z")
+	end, _ := time.Parse(time.RFC3339, "2015-04-30T16:00:00Z")
+
 	app := item.ToAppointment()
 	assert.Equal(t, "567", app.ItemId)
 	assert.Equal(t, "234", app.ChangeKey)

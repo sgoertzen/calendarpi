@@ -10,7 +10,6 @@ import (
 
 /*
 TODO: Only allow /scripts, /css, and /images to be downloaded
-TODO: Show status on main page.  Remove status and add last sync status columsn with "Never synced", "Syncing", "Error", "Successful"
 TODO: When adding disable button and show spinner
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
 TODO: support adding a new calendar (To add a new calendar to srv.Insert(calendar) - returns CalendarsInsertCall)
@@ -52,13 +51,23 @@ func runSyncLoop(config Config) {
 		time.Sleep(sleepTime)
 		users := GetUsers()
 		for _, user := range users {
+			user.State = syncing
+			user.Save() 
+			
 			appointments := GetExchangeAppointments(user)
 			log.Println("len:", len(appointments))
 			events, err := getGCalAppointments(user)
 			if err != nil {
 				log.Fatal(err)
 			}
-			mergeEvents(user, appointments, events)
+			err = mergeEvents(user, appointments, events)
+			if err != nil {
+				user.State = successfulsync
+			} else {
+				user.State = syncingerror
+			}
+			user.LastSync = time.Now()
+			user.Save()
 		}
 	}
 }

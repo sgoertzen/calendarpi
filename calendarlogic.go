@@ -48,8 +48,6 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 			return err
 		}
 	}
-	user.LastSync = time.Now()
-	user.Save()
 	return nil
 }
 

@@ -10,9 +10,10 @@ const (
 	exchangeLoginCaptured = "exchange login capture"
 	exchangeLoginVerified = "exchange login verified"
 	oauthTokenRecieved    = "oauth token recieved"
-	registered            = "idle"
+	registered            = "not synced"
 	syncing               = "syncing"
-	syncingerror          = "syncing error"
+	syncingerror          = "sync error"
+	successfulsync        = "success"
 )
 
 type User struct {
