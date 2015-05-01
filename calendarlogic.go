@@ -130,6 +130,7 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 		if e.Start == nil || e.Start.Date != eventStart.Date {
 			log.Println("Start has changed: ", eventStart.Date)
 			e.Start = &eventStart
+			e.End = &eventStart
 			changes = true
 		}
 	} else {
