@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 )
 
 type WebConfig interface {
@@ -24,6 +22,10 @@ func RunServer(conf WebConfig) {
 		log.Fatal(err)
 	}
 	header = string(headerbytes)
+	
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
+	http.Handle("/scripts/", http.StripPrefix("/scripts/", http.FileServer(http.Dir("./scripts"))))
 	http.HandleFunc("/", handler)
 	err = http.ListenAndServeTLS(":"+conf.Port(), conf.Certificate(), conf.PrivateKey(), nil)
 	if err != nil {
@@ -72,7 +74,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			showUserList(w, r)
 		}
 	default:
-		showFile(w, path)
+		http.NotFound(w,r)
 	}
 }
 
@@ -218,18 +220,4 @@ func showTemplatedFile(w http.ResponseWriter, filename string, data map[string]i
 		log.Printf("Error while showing list ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func showFile(w http.ResponseWriter, filename string) {
-	html, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Println(err)
-	}
-	if strings.HasSuffix(filename, ".js") {
-		w.Header().Set("content-Type", "application/x-javascript")
-	}
-	if strings.HasSuffix(filename, ".css") {
-		w.Header().Set("content-Type", "text/css")
-	}
-	fmt.Fprintf(w, string(html))
 }
