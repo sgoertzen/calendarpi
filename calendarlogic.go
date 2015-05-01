@@ -59,7 +59,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		}
 	}
 	for _, del := range actions.toDelete {
-		log.Println("Deleting event %s on %s", del.Summary, del.Start)
+		log.Printf("Deleting event %s on %s", del.Summary, del.Start)
 		err := srv.Events.Delete(user.GCalid, del.Id).Do()
 		if err != nil {
 			log.Println(err)
