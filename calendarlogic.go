@@ -127,7 +127,7 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 
 	if a.IsAllDayEvent {
 		eventStart := calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
-		if e.Start == nil && e.Start.Date != eventStart.Date {
+		if e.Start == nil || e.Start.Date != eventStart.Date {
 			log.Println("Start has changed: ", eventStart.Date)
 			e.Start = &eventStart
 			changes = true

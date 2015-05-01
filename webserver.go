@@ -180,7 +180,7 @@ func performDelete(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	storedUser := GetUser(username)
-	if storedUser.Password == password { //|| string(Key()) == CreateKey(username) {
+	if storedUser.Password == password {
 		DeleteUser(username)
 	} else {
 		// Allow for pw that matches encryption key
