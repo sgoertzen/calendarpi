@@ -1,5 +1,5 @@
 {
-  "SyncMinutes": 10,
+  "SyncInterval": "30m",
   "WebServerPort": "443",
   "SSLCertificateFile": "your_cert_file.pem",
   "SSLPrivateKeyFile": "your_private_key.pem",

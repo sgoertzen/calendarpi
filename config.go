@@ -1,7 +1,7 @@
 package main
 
 type Config struct {
-	SyncMinutes        int
+	SyncInterval       string
 	WebServerPort      string
 	SSLCertificateFile string
 	SSLPrivateKeyFile  string
@@ -12,8 +12,8 @@ type Config struct {
 	MaxResults         int
 }
 
-func (c Config) MinutesBetweenSync() int {
-	return c.SyncMinutes
+func (c Config) TimeBetweenSync() string {
+	return c.SyncInterval
 }
 
 func (c Config) Port() string {

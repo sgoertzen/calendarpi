@@ -45,8 +45,12 @@ func readConfig() Config {
 
 func runSyncLoop(config Config) {
 	for true {
-		log.Printf("Sleeping for %d minute(s)", config.MinutesBetweenSync())
-		sleepTime := time.Duration(config.MinutesBetweenSync() * 60 * 1e9)
+		log.Printf("Sleeping for %s", config.TimeBetweenSync())
+		//sleepTime := time.Duration(config.MinutesBetweenSync() * 60 * 1e9)
+		sleepTime, err := time.ParseDuration(config.TimeBetweenSync())
+		if err != nil {
+			log.Fatal("Unable to parse sleep time", err)
+		}
 		time.Sleep(sleepTime)
 		log.Println("Waking")
 		users := GetUsers()
