@@ -1,5 +1,4 @@
 # This will deploy the code to a raspberrypi device called "calendarpi"
-# TODO: Save blabbersnatzle.bak !
 echo 'Stopping service'
 ssh pi@calendarpi "sudo killall calendarpi"
 echo 'Backing up users data'
