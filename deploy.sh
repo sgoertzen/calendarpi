@@ -1,3 +1,9 @@
+# This will deploy the code to a raspberrypi device called "calendarpi"
+# TODO: Save blabbersnatzle.bak !
+echo 'Stopping service'
+ssh pi@calendarpi "sudo killall calendarpi"
+echo 'Backing up users data'
+ssh pi@calendarpi "mv /home/pi/gopath/src/github.com/sgoertzen/calendarpi/blabbersnatzle.bak /home/pi/gopath/src/github.com/sgoertzen/"
 echo 'Removing the old version'
 ssh pi@calendarpi "rm -rf /home/pi/gopath/src/github.com/sgoertzen/calendarpi/"
 echo 'Fetching the new version from github'
@@ -10,6 +16,8 @@ echo 'Copying our config over'
 scp conf.json pi@calendarpi:/home/pi/gopath/src/github.com/sgoertzen/calendarpi
 echo 'Building the project'
 ssh pi@calendarpi "export GOPATH=/home/pi/gopath && cd /home/pi/gopath/src/github.com/sgoertzen/calendarpi && /home/pi/go/bin/go build"
-# TODO: not sure if we want this or just to make it a service.  If a service need to stop it before deploy.
-#ssh pi@calendarpi "nohup sudo /home/pi/gopath/src/github.com/sgoertzen/calendarpi"
+echo 'Restoring users data'
+ssh pi@calendarpi "mv /home/pi/gopath/src/github.com/sgoertzen/blabbersnatzle.bak /home/pi/gopath/src/github.com/sgoertzen/calendarpi"
+echo 'Restarting service'
+ssh pi@calendarpi "cd /home/pi/gopath/src/github.com/sgoertzen/calendarpi && sudo /home/pi/gopath/src/github.com/sgoertzen/calendarpi/calendarpi &" &
 echo 'Project deployed!'
