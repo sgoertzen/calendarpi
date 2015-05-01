@@ -85,13 +85,7 @@ func syncUser(w http.ResponseWriter, r *http.Request) {
 	}
 	username := usernames[0]
 	user := GetUser(username)
-	log.Println("Starting on user ", user.Username)
-	appointments := GetExchangeAppointments(user)
-	events, err := getGCalAppointments(user)
-	if err != nil {
-		log.Fatal(err)
-	}
-	mergeEvents(user, appointments, events)
+	Sync(user)
 	redirectHome(w, r)
 }
 
@@ -109,10 +103,9 @@ func needskey(w http.ResponseWriter) bool {
 
 func saveKey(w http.ResponseWriter, r *http.Request) {
 	key := r.FormValue("encryptionkey")
-	SetKey(key)
-	err := DeserializeUsers()
+	err := DeserializeUsers(key)
 	if err != nil {
-		log.Println("Error while loading file.  Ignoring:", err)
+		log.Println("Unable to decrypt the file.  If you have forgotten the password just manually delete the saved users file.", err)
 	}
 	redirectHome(w, r)
 }

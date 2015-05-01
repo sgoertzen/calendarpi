@@ -9,20 +9,13 @@ import (
 
 var backupFile = "blabbersnatzle.bak"
 
-var key []byte
+var storedKey []byte
 
 func Key() []byte {
-	return key
-}
-
-func SetKey(keystring string) error {
-	localkey, err := CreateKey(keystring)
-	key = localkey
-	return err
+	return storedKey
 }
 
 func SerializeUsers(users []User) error {
-	log.Println("Serializing users")
 	os.Remove(backupFile)
 	encryptedData, err := serializeAndEncrypt(users)
 	if err != nil {
@@ -42,7 +35,7 @@ func serializeAndEncrypt(users []User) (string, error) {
 		log.Println("Unable to json the users!")
 		return "", err
 	}
-	encryptedData, err := Encrypt(key, data)
+	encryptedData, err := Encrypt(storedKey, data)
 	if err != nil {
 		log.Println("Unable to encyrpt the data")
 		return "", err
@@ -50,14 +43,16 @@ func serializeAndEncrypt(users []User) (string, error) {
 	return encryptedData, nil
 }
 
-func DeserializeUsers() error {
+func DeserializeUsers(key string) error {
+	localkey, err := CreateKey(key)
 	log.Println("Unserializing users")
 	filebytes, err := ioutil.ReadFile(backupFile)
 	if err != nil {
-		log.Println("Unable to find the backed up users file.")
-		return err
+		log.Println("Users file not present, skipping.") 
+		storedKey = localkey
+		return nil
 	}
-	decryptedData, err := Decrypt(key, filebytes)
+	decryptedData, err := Decrypt(localkey, filebytes)
 	if err != nil {
 		log.Println("Unable to decrypt the file")
 		return err
@@ -73,6 +68,9 @@ func DeserializeUsers() error {
 		log.Println("Unable to delete the file!")
 		return err
 	}
+	// Only save this key if we are successful
+	storedKey = localkey
+	
 	for _, user := range users {
 		user.Save()
 	}

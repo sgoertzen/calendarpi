@@ -49,7 +49,6 @@ func handleOAuthResponse(w http.ResponseWriter, r *http.Request) (User, error) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return User{}, err
 	}
-	log.Printf("Token is %s", token)
 
 	user := GetUser(username)
 	user.Token = token

@@ -87,7 +87,7 @@ func getExchangeCalendarData(user User) string {
 	soapRequest := buildCalendarItemRequest(user.Folderid, user.Changekey)
 	soapResponse, err := postContents(soapRequest, user)
 	if err != nil {
-		log.Println("Error while getting soap response", err)
+		log.Println("Error while getting soap response:", err)
 		return ""
 	}
 	return soapResponse
@@ -132,11 +132,15 @@ func postContents(contents []byte, user User) (string, error) {
 
 	client := &http.Client{}
 	response, err := client.Do(req2)
+	if err != nil {
+		return "", err
+	}
 	defer response.Body.Close()
 
 	content, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Println(err)
+		return "", err
 	}
 	return string(content), nil
 }

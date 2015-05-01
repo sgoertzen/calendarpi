@@ -9,6 +9,7 @@ import (
 )
 
 /*
+TODO: Error out if startup password is not right.  To fix you must manually remove the file.
 TODO: Only allow /scripts, /css, and /images to be downloaded
 TODO: When adding disable button and show spinner
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
@@ -47,27 +48,13 @@ func readConfig() Config {
 
 func runSyncLoop(config Config) {
 	for true {
+		log.Printf("Sleeping for %d minute(s)", config.MinutesBetweenSync())
 		sleepTime := time.Duration(config.MinutesBetweenSync() * 60 * 1e9)
 		time.Sleep(sleepTime)
+		log.Println("Waking")
 		users := GetUsers()
 		for _, user := range users {
-			user.State = syncing
-			user.Save()
-
-			appointments := GetExchangeAppointments(user)
-			log.Println("len:", len(appointments))
-			events, err := getGCalAppointments(user)
-			if err != nil {
-				log.Fatal(err)
-			}
-			err = mergeEvents(user, appointments, events)
-			if err != nil {
-				user.State = successfulsync
-			} else {
-				user.State = syncingerror
-			}
-			user.LastSync = time.Now()
-			user.Save()
+			Sync(user)
 		}
 	}
 }

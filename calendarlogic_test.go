@@ -106,15 +106,19 @@ func TestPopulateEventExistingNoChanges(t *testing.T) {
 	e := calendar.Event{
 		Id:          "123",
 		Summary:     "phone call",
-		Description: "\n",
-		Start:       &calendar.EventDateTime{DateTime: "2015-04-13T16:00:00Z"},
+		Description: "\nhello",
+		Start:       &calendar.EventDateTime{DateTime: "2015-05-04T11:00:00-07:00"},
+		End:         &calendar.EventDateTime{DateTime: "2015-05-04T12:00:00-07:00"},
 	}
-	t1, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
+	tStart, _ := time.Parse(time.RFC3339, "2015-05-04T18:00:00Z")
+	tEnd, _ := time.Parse(time.RFC3339, "2015-05-04T18:00:00Z")
 	a := Appointment{
 		Subject:       "phone call",
 		ItemId:        "123",
-		Start:         t1,
-		IsAllDayEvent: true,
+		Start:         tStart,
+		End:           tEnd,
+		IsAllDayEvent: false,
+		Body: "hello",
 	}
 	changes := populateEvent(&e, &a)
 	assert.False(t, changes)
@@ -143,8 +147,8 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 		Id:          "123",
 		Summary:     "phone call",
 		Description: "\n",
-		Start:       &calendar.EventDateTime{DateTime: "2015-04-12T16:00:00Z"},
-		End:         &calendar.EventDateTime{DateTime: "2015-04-12T17:00:00Z"},
+		Start:       &calendar.EventDateTime{DateTime: "2015-04-13T16:00:00Z"},
+		End:         &calendar.EventDateTime{DateTime: "2015-04-13T18:00:00Z"},
 	}
 	tStart, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
 	tEnd, _ := time.Parse(time.RFC3339, "2015-04-13T17:00:00Z")
@@ -156,7 +160,9 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 		IsAllDayEvent: false,
 	}
 	changes := populateEvent(&e, &a)
-	assert.True(t, changes)
+	
+	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
+	assert.False(t, changes)
 }
 
 func TestBuildDescription(t *testing.T) {
