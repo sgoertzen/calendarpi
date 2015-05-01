@@ -9,7 +9,6 @@ import (
 )
 
 /*
-TODO: When adding disable button and show spinner
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
 TODO: support adding a new calendar (To add a new calendar to srv.Insert(calendar) - returns CalendarsInsertCall)
 */

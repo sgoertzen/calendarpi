@@ -22,7 +22,7 @@ func RunServer(conf WebConfig) {
 		log.Fatal(err)
 	}
 	header = string(headerbytes)
-	
+
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/scripts/", http.StripPrefix("/scripts/", http.FileServer(http.Dir("./scripts"))))
@@ -74,7 +74,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			showUserList(w, r)
 		}
 	default:
-		http.NotFound(w,r)
+		http.NotFound(w, r)
 	}
 }
 
