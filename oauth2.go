@@ -82,6 +82,7 @@ func getGCalAppointments(user User) (*calendar.Events, error) {
 		TimeMin(t).MaxResults(int64(maxFetchSize)).OrderBy("startTime").Do()
 	if err != nil {
 		log.Println("Unable to retrieve the user's events. %v", err)
+		return nil, err
 	}
 	return events, nil
 }

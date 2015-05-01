@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"github.com/kennygrant/sanitize"
 )
 
 type Organizer struct {
@@ -54,6 +55,24 @@ type Appointment struct {
 	Organizer      string
 	Body           string
 	BodyType       string
+}
+
+
+func (a *Appointment) BuildDesc() string {
+	desc := ""
+
+	addField := func(field string, label string) {
+		if len(field) > 0 {
+			desc += label + " " + field + "\n"
+		}
+	}
+	addField(a.Organizer, "Organizer:")
+	addField(a.To, "To:")
+	addField(a.Cc, "Cc:")
+	addField(a.MyResponseType, "Response:")
+	body := sanitize.HTML(a.Body)
+	desc += "\n" + body
+	return desc
 }
 
 func ParseCalendarFolder(soap string) ItemId {

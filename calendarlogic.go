@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/kennygrant/sanitize"
 	"google.golang.org/api/calendar/v3"
 	"log"
 	"time"
@@ -36,7 +35,6 @@ func Sync(user User) {
 
 func mergeEvents(user User, appointments []Appointment, events *calendar.Events) error {
 
-	buildDiffLists(appointments, events)
 	actions, err := buildDiffLists(appointments, events)
 
 	client := getClient(user)
@@ -118,7 +116,7 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 		log.Println("Location has changed: ", e.Location, a.Location)
 	}
 
-	desc := buildDesc(a)
+	desc := a.BuildDesc()
 	if e.Description != desc {
 		e.Description = desc
 		changes = true
@@ -167,19 +165,3 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 	return changes
 }
 
-func buildDesc(a *Appointment) string {
-	var desc = ""
-
-	addField := func(field string, label string) {
-		if len(field) > 0 {
-			desc += label + " " + field + "\n"
-		}
-	}
-	addField(a.Organizer, "Organizer:")
-	addField(a.To, "To:")
-	addField(a.Cc, "Cc:")
-	addField(a.MyResponseType, "Response:")
-	body := sanitize.HTML(a.Body)
-	desc += "\n" + body
-	return desc
-}

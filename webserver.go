@@ -92,7 +92,7 @@ func syncUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func needskey(w http.ResponseWriter) bool {
-	key := Key()
+	key := storedKey()
 	if len(key) < 10 {
 		data := map[string]interface{}{
 			"Header": template.HTML(header),
@@ -185,7 +185,7 @@ func performDelete(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// Allow for pw that matches encryption key
 		key, _ := CreateKey(password)
-		if string(key) == string(Key()) {
+		if string(key) == string(storedKey()) {
 			DeleteUser(username)
 		} else {
 			showDeleteForm(w, r, "Incorrect Password", username)

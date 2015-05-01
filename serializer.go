@@ -9,10 +9,10 @@ import (
 
 var backupFile = "blabbersnatzle.bak"
 
-var storedKey []byte
+var storedKeyBytes []byte
 
-func Key() []byte {
-	return storedKey
+func storedKey() []byte {
+	return storedKeyBytes
 }
 
 func SerializeUsers(users []User) error {
@@ -35,7 +35,7 @@ func serializeAndEncrypt(users []User) (string, error) {
 		log.Println("Unable to json the users!")
 		return "", err
 	}
-	encryptedData, err := Encrypt(storedKey, data)
+	encryptedData, err := Encrypt(storedKeyBytes, data)
 	if err != nil {
 		log.Println("Unable to encyrpt the data")
 		return "", err
@@ -49,7 +49,7 @@ func DeserializeUsers(key string) error {
 	filebytes, err := ioutil.ReadFile(backupFile)
 	if err != nil {
 		log.Println("Users file not present, skipping.")
-		storedKey = localkey
+		storedKeyBytes = localkey
 		return nil
 	}
 	decryptedData, err := Decrypt(localkey, filebytes)
@@ -69,7 +69,7 @@ func DeserializeUsers(key string) error {
 		return err
 	}
 	// Only save this key if we are successful
-	storedKey = localkey
+	storedKeyBytes = localkey
 
 	for _, user := range users {
 		user.Save()
