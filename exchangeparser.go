@@ -56,7 +56,6 @@ type Appointment struct {
 	BodyType       string
 }
 
-// TODO: refactor this method with ParseAppointments
 func ParseCalendarFolder(soap string) ItemId {
 	decoder := xml.NewDecoder(bytes.NewBufferString(soap))
 	var itemId ItemId

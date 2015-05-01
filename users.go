@@ -17,15 +17,15 @@ const (
 )
 
 type User struct {
-	Username     string
-	Password     string
-	Token        *oauth2.Token
-	Datecreated  time.Time
-	LastSync     time.Time
-	Folderid     string
-	Changekey    string
-	GCalid       string
-	State        string
+	Username    string
+	Password    string
+	Token       *oauth2.Token
+	Datecreated time.Time
+	LastSync    time.Time
+	Folderid    string
+	Changekey   string
+	GCalid      string
+	State       string
 }
 
 type Serializer func([]User) error

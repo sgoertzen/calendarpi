@@ -9,7 +9,6 @@ import (
 )
 
 /*
-TODO: Error out if startup password is not right.  To fix you must manually remove the file.
 TODO: Only allow /scripts, /css, and /images to be downloaded
 TODO: When adding disable button and show spinner
 TODO: Make private key for user and embed as hidden on page.  Verify this before saving.

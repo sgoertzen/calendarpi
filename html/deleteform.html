@@ -13,7 +13,7 @@
     {{ if .Message }}
     <div class="errorMessage">{{ .Message }}</div>
     {{ end }}
-    Please type your password remove your account
+    Please type your password to remove your account
     <form id="mainform" action="/confirmdelete" method="post">
       <input type="hidden" name="username" value="{{ .Username }}"></input>
       <span>Exchange Login: </span><span><b>{{ .Username }}</b></span>
@@ -22,7 +22,6 @@
     </form>
     <script>
       function submitform(){
-        // TODO: Validate the form!
         document.forms["mainform"].submit();
       }
     </script>

@@ -118,7 +118,7 @@ func TestPopulateEventExistingNoChanges(t *testing.T) {
 		Start:         tStart,
 		End:           tEnd,
 		IsAllDayEvent: false,
-		Body: "hello",
+		Body:          "hello",
 	}
 	changes := populateEvent(&e, &a)
 	assert.False(t, changes)
@@ -160,7 +160,7 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 		IsAllDayEvent: false,
 	}
 	changes := populateEvent(&e, &a)
-	
+
 	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
 	assert.False(t, changes)
 }

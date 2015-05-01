@@ -48,7 +48,7 @@ func DeserializeUsers(key string) error {
 	log.Println("Unserializing users")
 	filebytes, err := ioutil.ReadFile(backupFile)
 	if err != nil {
-		log.Println("Users file not present, skipping.") 
+		log.Println("Users file not present, skipping.")
 		storedKey = localkey
 		return nil
 	}
@@ -70,7 +70,7 @@ func DeserializeUsers(key string) error {
 	}
 	// Only save this key if we are successful
 	storedKey = localkey
-	
+
 	for _, user := range users {
 		user.Save()
 	}

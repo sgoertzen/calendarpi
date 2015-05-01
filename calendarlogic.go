@@ -135,9 +135,9 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 	} else {
 		appStart := a.Start.UTC().Format(time.RFC3339)
 		appEnd := a.End.UTC().Format(time.RFC3339)
-		
+
 		var eventStart, eventEnd string
-		if e.Start != nil {	
+		if e.Start != nil {
 			timed, _ := time.Parse(time.RFC3339, e.Start.DateTime)
 			eventStart = timed.UTC().Format(time.RFC3339)
 		}
@@ -146,7 +146,7 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 			e.Start = &calendar.EventDateTime{DateTime: appStart}
 			changes = true
 		}
-		
+
 		if e.End != nil {
 			timed, _ := time.Parse(time.RFC3339, e.Start.DateTime)
 			eventEnd = timed.UTC().Format(time.RFC3339)
