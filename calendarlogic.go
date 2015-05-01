@@ -19,15 +19,13 @@ func Sync(user User) {
 
 	appointments := GetExchangeAppointments(user)
 	events, err := getGCalAppointments(user)
-	if err != nil {
-		log.Fatal(err)
+	if err == nil {
+		err = mergeEvents(user, appointments, events)
+		user.State = successfulsync
 	}
-	err = mergeEvents(user, appointments, events)
 	if err != nil {
 		log.Println("Error while syncing events for", user, err)
 		user.State = syncingerror
-	} else {
-		user.State = successfulsync
 	}
 	user.LastSync = time.Now()
 	user.Save()

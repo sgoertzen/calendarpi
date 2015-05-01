@@ -75,6 +75,7 @@ func getGCalAppointments(user User) (*calendar.Events, error) {
 	srv, err := calendar.New(client)
 	if err != nil {
 		log.Println("Unable to retrieve calendar Client %v", err)
+		return nil, err
 	}
 	t := time.Now().Format(time.RFC3339)
 	events, err := srv.Events.List(user.GCalid).ShowDeleted(false).

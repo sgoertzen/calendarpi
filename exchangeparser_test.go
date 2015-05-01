@@ -202,3 +202,22 @@ func TestToAppointment(t *testing.T) {
 	assert.Equal(t, start, app.Start)
 	assert.Equal(t, end, app.End)
 }
+
+
+func TestBuildDescription(t *testing.T) {
+	expected := `Organizer: minifig
+To: deadpool
+Cc: batman
+
+body
+body2`
+
+	app := Appointment{
+		To:        "deadpool",
+		Cc:        "batman",
+		Organizer: "minifig",
+		Body:      "<html><body><b>body</b><br/>body2</body></html>",
+	}
+	desc := app.BuildDesc()
+	assert.Equal(t, expected, desc)
+}

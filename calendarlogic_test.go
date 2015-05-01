@@ -164,21 +164,3 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
 	assert.False(t, changes)
 }
-
-func TestBuildDescription(t *testing.T) {
-	expected := `Organizer: minifig
-To: deadpool
-Cc: batman
-
-body
-body2`
-
-	app := Appointment{
-		To:        "deadpool",
-		Cc:        "batman",
-		Organizer: "minifig",
-		Body:      "<html><body><b>body</b><br/>body2</body></html>",
-	}
-	desc := buildDesc(&app)
-	assert.Equal(t, expected, desc)
-}
