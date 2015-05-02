@@ -203,7 +203,6 @@ func TestToAppointment(t *testing.T) {
 	assert.Equal(t, end, app.End)
 }
 
-
 func TestBuildDescription(t *testing.T) {
 	expected := `Organizer: minifig
 To: deadpool

@@ -162,4 +162,3 @@ func populateEvent(e *calendar.Event, a *Appointment) bool {
 	}
 	return changes
 }
-

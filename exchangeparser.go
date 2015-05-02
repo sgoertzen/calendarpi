@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"github.com/kennygrant/sanitize"
 	"log"
 	"time"
-	"github.com/kennygrant/sanitize"
 )
 
 type Organizer struct {
@@ -56,7 +56,6 @@ type Appointment struct {
 	Body           string
 	BodyType       string
 }
-
 
 func (a *Appointment) BuildDesc() string {
 	desc := ""
