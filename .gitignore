@@ -5,3 +5,4 @@ conf.json
 coverage.out
 .DS_Store
 .settings/*
+.idea/*
