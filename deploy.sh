@@ -10,7 +10,7 @@ ssh pi@calendarpi "export GOPATH=/home/pi/gopath && /home/pi/go/bin/go get githu
 echo 'Create the certs directory'
 ssh pi@calendarpi "mkdir /home/pi/gopath/src/github.com/sgoertzen/calendarpi/certs"
 echo 'Copying the certs into place'
-ssh pi@calendarpi "cp /home/pi/gopath/src/github.com/sgoertzen/calendarpi/testsetup/*.pem /home/pi/gopath/src/github.com/sgoertzen/calendarpi/certs"
+scp certs/cert.pem certs/key.pem pi@calendarpi:/home/pi/gopath/src/github.com/sgoertzen/calendarpi/certs
 echo 'Copying our config over'
 scp conf.json pi@calendarpi:/home/pi/gopath/src/github.com/sgoertzen/calendarpi
 echo 'Building the project'

@@ -8,11 +8,6 @@ import (
 	"time"
 )
 
-/*
-TODO: Make private key for user and embed as hidden on page.  Verify this before saving.
-TODO: support adding a new calendar (To add a new calendar to srv.Insert(calendar) - returns CalendarsInsertCall)
-*/
-
 const configfile = "conf.json"
 
 func main() {
