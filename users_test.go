@@ -59,3 +59,21 @@ func TestDeleteEmptyUser(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, serialized)
 }
+
+func TestGetUsersSorted(t *testing.T) {
+	userZ := User{
+		Username: "zzz",
+		Password: "zzz",
+	}
+	userA := User{
+		Username: "aaa",
+		Password: "aaa",
+	}
+	userZ.Save()
+	userA.Save()
+	users := GetUsers()
+	assert.Equal(t, 3, len(users))
+	assert.Equal(t, "aaa", users[0].Username)
+	assert.Equal(t, "bob", users[1].Username)
+	assert.Equal(t, "zzz", users[2].Username)
+}

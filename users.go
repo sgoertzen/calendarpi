@@ -3,6 +3,7 @@ package main
 import (
 	"golang.org/x/oauth2"
 	"log"
+	"sort"
 	"time"
 )
 
@@ -64,11 +65,15 @@ func GetUsers() []User {
 		return make([]User, 0)
 	}
 	users := make([]User, len(m))
-	i := 0
-	for _, value := range m {
-		users[i] = value
-		i++
-	}
+	
+	var keys []string
+    for k := range m {
+        keys = append(keys, k)
+    }
+    sort.Strings(keys)
+	for i, username := range keys {
+		users[i] = m[username]
+    }
 	return users
 }
 
