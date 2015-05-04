@@ -13,6 +13,8 @@ echo 'Copying the certs into place'
 scp certs/cert.pem certs/key.pem pi@calendarpi:/home/pi/gopath/src/github.com/sgoertzen/calendarpi/certs
 echo 'Copying our config over'
 scp conf.json pi@calendarpi:/home/pi/gopath/src/github.com/sgoertzen/calendarpi
+echo 'Fetching dependencies'
+ssh pi@calendarpi "export GOPATH=/home/pi/gopath && cd /home/pi/gopath/src/github.com/sgoertzen/calendarpi && /home/pi/go/bin/go get ./..."
 echo 'Building the project'
 ssh pi@calendarpi "export GOPATH=/home/pi/gopath && cd /home/pi/gopath/src/github.com/sgoertzen/calendarpi && /home/pi/go/bin/go build"
 echo 'Restoring users data'
