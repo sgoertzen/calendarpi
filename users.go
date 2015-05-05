@@ -11,7 +11,7 @@ const (
 	exchangeLoginCaptured = "exchange login capture"
 	exchangeLoginVerified = "exchange login verified"
 	oauthTokenRecieved    = "oauth token recieved"
-	registered            = "not synced"
+	registered            = "queued"
 	syncing               = "syncing"
 	syncingerror          = "sync error"
 	successfulsync        = "success"

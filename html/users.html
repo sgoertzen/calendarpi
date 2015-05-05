@@ -21,7 +21,7 @@
           <td><div data-date="{{ .Datecreated }}"></div></td>
           <td><div data-date="{{ .LastSync }}"></div></td>
           <td>{{ .State }}</td>
-          <td><a href="/sync?username={{ .Username }}">Sync</a> <a href="/delete?username={{ .Username }}">Delete</a></td>
+          <td><a href="/delete?username={{ .Username }}">Delete</a></td>
         </tr>
         {{ end }}
       {{ end }}

@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 	    log.Fatalf("error opening file: %v", err)
 	}
-	defer f.Close()
+	defer f.Close()  // This line must be done in this method
 	log.SetOutput(f)
 	
 	SetOauthConfig(config)
@@ -47,18 +47,21 @@ func readConfig() Config {
 }
 
 func runSyncLoop(config Config) {
-	for true {
-		log.Printf("Sleeping for %s", config.TimeBetweenSync())
-		//sleepTime := time.Duration(config.MinutesBetweenSync() * 60 * 1e9)
-		sleepTime, err := time.ParseDuration(config.TimeBetweenSync())
-		if err != nil {
-			log.Fatal("Unable to parse sleep time", err)
-		}
-		time.Sleep(sleepTime)
-		log.Println("Waking")
+	log.Printf("Sync Interval: %s", config.TimeBetweenSync())
+	syncInterval, err := time.ParseDuration(config.TimeBetweenSync())
+	if err != nil {
+		log.Fatal("Unable to parse sleep time", err)
+	}
+		
+	sleepTime, err := time.ParseDuration("1m")
+	for true {	
+		log.Println("syncing")
 		users := GetUsers()
 		for _, user := range users {
-			Sync(user)
+			if time.Now().After(user.LastSync.Add(syncInterval)) {
+				Sync(user)
+			}
 		}
+		time.Sleep(sleepTime)
 	}
 }
