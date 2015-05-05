@@ -15,6 +15,10 @@ func storedKey() []byte {
 	return storedKeyBytes
 }
 
+func setStoredKey(key []byte) {
+	storedKeyBytes = key
+}
+
 func SerializeUsers(users []User) error {
 	os.Remove(backupFile)
 	encryptedData, err := serializeAndEncrypt(users)
@@ -29,7 +33,7 @@ func SerializeUsers(users []User) error {
 	return nil
 }
 
-func serializeAndEncrypt(users []User) (string, error) {
+	func serializeAndEncrypt(users []User) (string, error) {
 	data, err := json.Marshal(users)
 	if err != nil {
 		log.Println("Unable to json the users!")
@@ -49,30 +53,39 @@ func DeserializeUsers(key string) error {
 	filebytes, err := ioutil.ReadFile(backupFile)
 	if err != nil {
 		log.Println("Users file not present, skipping.")
-		storedKeyBytes = localkey
+		setStoredKey(localkey)
 		return nil
 	}
-	decryptedData, err := Decrypt(localkey, filebytes)
+	users, err := decryptAndDeserialize(localkey, filebytes)
+	if err != nil {
+		return err
+	}
+	// Only save this key if we are successful
+	setStoredKey(localkey)
+	
+	for _, user := range users {
+		user.Save()
+	}
+	return nil
+}
+
+func decryptAndDeserialize(localkey []byte, bytes []byte) ([]User, error) {
+	
+	decryptedData, err := Decrypt(localkey, bytes)
 	if err != nil {
 		log.Println("Unable to decrypt the file")
-		return err
+		return nil, err
 	}
 	var users []User
 	err3 := json.Unmarshal([]byte(decryptedData), &users)
 	if err3 != nil {
 		log.Println("Error while unmarshaling the json")
-		return err
+		return nil, err
 	}
-	err2 := os.Remove(backupFile)
+	/*err2 := os.Remove(backupFile)
 	if err2 != nil {
 		log.Println("Unable to delete the file!")
 		return err
-	}
-	// Only save this key if we are successful
-	storedKeyBytes = localkey
-
-	for _, user := range users {
-		user.Save()
-	}
-	return nil
+	}*/
+	return users, nil
 }

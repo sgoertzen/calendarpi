@@ -54,8 +54,7 @@ func runSyncLoop(config Config) {
 	}
 		
 	sleepTime, err := time.ParseDuration("1m")
-	for true {	
-		log.Println("syncing")
+	for true {
 		users := GetUsers()
 		for _, user := range users {
 			if time.Now().After(user.LastSync.Add(syncInterval)) {
