@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
-	//"github.com/kennygrant/sanitize"
+	"github.com/sgoertzen/html2text"
 	"golang.org/x/net/html"
 	"log"
 	"strings"
@@ -151,8 +151,7 @@ func (a *Appointment) BuildDesc() string {
 	addField(a.To, "To:")
 	addField(a.Cc, "Cc:")
 	addField(a.MyResponseType, "Response:")
-	body := convertLinks(a.Body)
-	body = strings.Replace(body, "\u00a0", " ", -1)
+	body := html2text.Textify(a.Body)
 	desc += body
 	return desc
 }
