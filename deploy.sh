@@ -5,6 +5,7 @@ echo 'Backing up users data'
 ssh pi@calendarpi "mv /home/pi/gopath/src/github.com/sgoertzen/calendarpi/blabbersnatzle.bak /home/pi/gopath/src/github.com/sgoertzen/"
 echo 'Removing the old version'
 ssh pi@calendarpi "rm -rf /home/pi/gopath/src/github.com/sgoertzen/calendarpi/"
+ssh pi@calendarpi "rm -rf /home/pi/gopath/src/github.com/sgoertzen/html2text/"
 echo 'Fetching the new version from github'
 ssh pi@calendarpi "export GOPATH=/home/pi/gopath && /home/pi/go/bin/go get github.com/sgoertzen/calendarpi"
 echo 'Create the certs directory'

@@ -51,7 +51,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 		}
 	}
 	for _, edit := range actions.toUpdate {
-		log.Printf("Updating event of %s on ", edit.Summary, edit.Start)
+		log.Printf("Updating event of %s on %s", edit.Summary, edit.Start)
 		_, err := srv.Events.Update(user.GCalid, edit.Id, edit).Do()
 		if err != nil {
 			log.Println(err)
