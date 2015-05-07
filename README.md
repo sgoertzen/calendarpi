@@ -16,10 +16,6 @@ CalendarPi supports one directional sync from Exchange to Google Calendar.  It d
 ### Security
 CalendarPi secures all credentials by storing them in an encrypted file locally.  The master password for encrypting and decrypting is never stored on the system.  It must be entered each time the software starts up and is just kept in memory.  This prohibts anyone who has physical access to the machine from recovering any sensitive data.
 
-### Version
-1.0.0
-
-
 ## Setup Instructions
 Download and install Go from https://golang.org/dl/
 Set your GOPATH variable to whatever you want
