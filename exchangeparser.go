@@ -149,7 +149,13 @@ func (a *Appointment) BuildDesc() string {
 	addField(a.To, "To:")
 	addField(a.Cc, "Cc:")
 	addField(a.MyResponseType, "Response:")
-	body := html2text.Textify(a.Body)
+	body, err := html2text.Textify(a.Body)
+	if err != nil {
+		log.Println("Error while building text description.")
+		log.Println(a.Body)
+		log.Println(err)
+		body = "Unable to create text from appointment description."
+	}
 	desc += body
 	return desc
 }
