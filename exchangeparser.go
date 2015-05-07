@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
-	"github.com/kennygrant/sanitize"
+	//"github.com/kennygrant/sanitize"
+	"golang.org/x/net/html"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -55,23 +57,6 @@ type Appointment struct {
 	Organizer      string
 	Body           string
 	BodyType       string
-}
-
-func (a *Appointment) BuildDesc() string {
-	desc := ""
-
-	addField := func(field string, label string) {
-		if len(field) > 0 {
-			desc += label + " " + field + "\n"
-		}
-	}
-	addField(a.Organizer, "Organizer:")
-	addField(a.To, "To:")
-	addField(a.Cc, "Cc:")
-	addField(a.MyResponseType, "Response:")
-	body := sanitize.HTML(a.Body)
-	desc += "\n" + body
-	return desc
 }
 
 func ParseCalendarFolder(soap string) ItemId {
@@ -152,4 +137,64 @@ func (c CalendarItem) ToAppointment() Appointment {
 
 func (a Appointment) String() string {
 	return fmt.Sprintf("%s starting %d", a.Subject, a.Start)
+}
+
+func (a *Appointment) BuildDesc() string {
+	desc := ""
+
+	addField := func(field string, label string) {
+		if len(field) > 0 {
+			desc += label + " " + field + "\n"
+		}
+	}
+	addField(a.Organizer, "Organizer:")
+	addField(a.To, "To:")
+	addField(a.Cc, "Cc:")
+	addField(a.MyResponseType, "Response:")
+	body := convertLinks(a.Body)
+	body = strings.Replace(body, "\u00a0", " ", -1)
+	desc += body
+	return desc
+}
+
+func convertLinks(body string) string {
+	r := strings.NewReader(body)
+	doc, err := html.Parse(r)
+	if err != nil {
+		// ...
+	}
+	
+	var breakers = make(map[string]bool)
+	breakers["br"] = true
+	breakers["div"] = true
+	breakers["tr"] = true
+	breakers["li"] = true
+	
+	var f func(*html.Node, *bytes.Buffer)
+	f = func(n *html.Node, b *bytes.Buffer) {
+		processChildren := true
+		
+		if n.Type == html.ElementNode && n.Data == "head" {
+			return
+		} else if n.Type == html.ElementNode && n.Data == "a" && n.FirstChild != nil {
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c, b)
+			}
+			b.WriteString(fmt.Sprintf(" (link: %s)", n.Attr[0].Val))
+			processChildren = false
+		} else if n.Type == html.TextNode {
+			b.WriteString(n.Data)
+		} 
+		if processChildren {
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c, b)
+			}
+		}
+		if n.Type == html.ElementNode && breakers[n.Data] {
+			b.WriteString("\n")
+		}
+	}
+	var buffer bytes.Buffer
+	f(doc, &buffer)
+	return strings.TrimSpace(buffer.String())
 }

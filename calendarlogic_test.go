@@ -33,7 +33,7 @@ func TestBuildDiffListsAllNew(t *testing.T) {
 	assert.Equal(t, 1, len(actions.toAdd))
 	assert.Equal(t, "sub", actions.toAdd[0].Summary)
 	assert.Equal(t, "loc", actions.toAdd[0].Location)
-	assert.Equal(t, "\nbody", actions.toAdd[0].Description)
+	assert.Equal(t, "body", actions.toAdd[0].Description)
 	assert.Equal(t, 0, len(actions.toUpdate))
 	assert.Equal(t, 0, len(actions.toDelete))
 }
@@ -106,7 +106,7 @@ func TestPopulateEventExistingNoChanges(t *testing.T) {
 	e := calendar.Event{
 		Id:          "123",
 		Summary:     "phone call",
-		Description: "\nhello",
+		Description: "hello",
 		Start:       &calendar.EventDateTime{DateTime: "2015-05-04T11:00:00-07:00"},
 		End:         &calendar.EventDateTime{DateTime: "2015-05-04T12:00:00-07:00"},
 	}
@@ -128,7 +128,7 @@ func TestPopulateEventExistingStartChange(t *testing.T) {
 	e := calendar.Event{
 		Id:          "123",
 		Summary:     "phone call",
-		Description: "\n",
+		Description: "",
 		Start:       &calendar.EventDateTime{DateTime: "2015-04-12T16:00:00Z"},
 	}
 	t1, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
@@ -146,7 +146,7 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 	e := calendar.Event{
 		Id:          "123",
 		Summary:     "phone call",
-		Description: "\n",
+		Description: "",
 		Start:       &calendar.EventDateTime{DateTime: "2015-04-13T16:00:00Z"},
 		End:         &calendar.EventDateTime{DateTime: "2015-04-13T18:00:00Z"},
 	}
