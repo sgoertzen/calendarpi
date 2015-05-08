@@ -155,7 +155,14 @@ func showDeleteForm(w http.ResponseWriter, r *http.Request, message string, user
 func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	user := User{Username: username, Password: password, State: exchangeLoginCaptured}
+	user := User{
+		ExUser: &xchango.ExchangeUser {
+			Username: username, 
+			Password: password,
+		},
+		Username: username, 
+		Password: password,
+		State: exchangeLoginCaptured}
 	user.Save()
 
 	cal, err := xchango.GetExchangeCalendar(user.ExUser)
