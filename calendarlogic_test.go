@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/sgoertzen/xchango"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/calendar/v3"
 	"testing"
@@ -8,7 +9,7 @@ import (
 )
 
 func TestBuildDiffListsEmpty(t *testing.T) {
-	apps := []Appointment{}
+	apps := []xchango.Appointment{}
 	events := calendar.Events{}
 
 	actions, err := buildDiffLists(apps, &events)
@@ -18,8 +19,8 @@ func TestBuildDiffListsEmpty(t *testing.T) {
 }
 
 func TestBuildDiffListsAllNew(t *testing.T) {
-	apps := []Appointment{
-		Appointment{
+	apps := []xchango.Appointment{
+		xchango.Appointment{
 			ItemId:   "Hello",
 			Subject:  "sub",
 			Location: "loc",
@@ -39,7 +40,7 @@ func TestBuildDiffListsAllNew(t *testing.T) {
 }
 
 func TestBuildDiffListsDelete(t *testing.T) {
-	apps := []Appointment{}
+	apps := []xchango.Appointment{}
 	events := calendar.Events{
 		Items: []*calendar.Event{
 			&calendar.Event{
@@ -60,7 +61,7 @@ func TestBuildDiffListsDelete(t *testing.T) {
 }
 
 func TestBuildDiffListsLeaveExisting(t *testing.T) {
-	apps := []Appointment{}
+	apps := []xchango.Appointment{}
 	events := calendar.Events{
 		Items: []*calendar.Event{
 			&calendar.Event{
@@ -77,7 +78,7 @@ func TestBuildDiffListsLeaveExisting(t *testing.T) {
 
 func TestPopulateEventEmpty(t *testing.T) {
 	e := calendar.Event{}
-	a := Appointment{
+	a := xchango.Appointment{
 		Subject: "42",
 		ItemId:  "uniqueId",
 	}
@@ -91,7 +92,7 @@ func TestPopulateEventExisting(t *testing.T) {
 		Id:      "train",
 		Summary: "blah",
 	}
-	a := Appointment{
+	a := xchango.Appointment{
 		Subject: "42",
 		ItemId:  "uniqueId",
 	}
@@ -112,7 +113,7 @@ func TestPopulateEventExistingNoChanges(t *testing.T) {
 	}
 	tStart, _ := time.Parse(time.RFC3339, "2015-05-04T18:00:00Z")
 	tEnd, _ := time.Parse(time.RFC3339, "2015-05-04T18:00:00Z")
-	a := Appointment{
+	a := xchango.Appointment{
 		Subject:       "phone call",
 		ItemId:        "123",
 		Start:         tStart,
@@ -132,7 +133,7 @@ func TestPopulateEventExistingStartChange(t *testing.T) {
 		Start:       &calendar.EventDateTime{DateTime: "2015-04-12T16:00:00Z"},
 	}
 	t1, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
-	a := Appointment{
+	a := xchango.Appointment{
 		Subject:       "phone call",
 		ItemId:        "123",
 		Start:         t1,
@@ -152,7 +153,7 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 	}
 	tStart, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
 	tEnd, _ := time.Parse(time.RFC3339, "2015-04-13T17:00:00Z")
-	a := Appointment{
+	a := xchango.Appointment{
 		Subject:       "phone call",
 		ItemId:        "123",
 		Start:         tStart,

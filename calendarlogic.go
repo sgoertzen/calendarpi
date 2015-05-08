@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/sgoertzen/xchango"
 	"google.golang.org/api/calendar/v3"
 	"log"
 	"time"
@@ -17,7 +18,7 @@ func Sync(user User) {
 	user.State = syncing
 	user.Save()
 
-	appointments := GetExchangeAppointments(user)
+	appointments, err := xchango.GetExchangeAppointments(user.ExUser, user.ExCal)
 	events, err := getGCalAppointments(user)
 	if err == nil {
 		err = mergeEvents(user, appointments, events)
@@ -31,7 +32,8 @@ func Sync(user User) {
 	user.Save()
 }
 
-func mergeEvents(user User, appointments []Appointment, events *calendar.Events) error {
+// TODO< make the appointment array a pointer as well
+func mergeEvents(user User, appointments []xchango.Appointment, events *calendar.Events) error {
 
 	actions, err := buildDiffLists(appointments, events)
 
@@ -69,7 +71,7 @@ func mergeEvents(user User, appointments []Appointment, events *calendar.Events)
 	return nil
 }
 
-func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventActions, error) {
+func buildDiffLists(appointments []xchango.Appointment, events *calendar.Events) (EventActions, error) {
 	var itemMap = make(map[string]*calendar.Event)
 	for _, event := range events.Items {
 		if event.ExtendedProperties == nil || len(event.ExtendedProperties.Private["ItemId"]) == 0 {
@@ -99,7 +101,7 @@ func buildDiffLists(appointments []Appointment, events *calendar.Events) (EventA
 	return eventActions, nil
 }
 
-func populateEvent(e *calendar.Event, a *Appointment) bool {
+func populateEvent(e *calendar.Event, a *xchango.Appointment) bool {
 	var changes = false
 
 	if e.Summary != a.Subject {

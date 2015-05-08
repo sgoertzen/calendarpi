@@ -33,7 +33,7 @@ func SerializeUsers(users []User) error {
 	return nil
 }
 
-	func serializeAndEncrypt(users []User) (string, error) {
+func serializeAndEncrypt(users []User) (string, error) {
 	data, err := json.Marshal(users)
 	if err != nil {
 		log.Println("Unable to json the users!")
@@ -62,7 +62,7 @@ func DeserializeUsers(key string) error {
 	}
 	// Only save this key if we are successful
 	setStoredKey(localkey)
-	
+
 	for _, user := range users {
 		user.Save()
 	}
@@ -70,7 +70,7 @@ func DeserializeUsers(key string) error {
 }
 
 func decryptAndDeserialize(localkey []byte, bytes []byte) ([]User, error) {
-	
+
 	decryptedData, err := Decrypt(localkey, bytes)
 	if err != nil {
 		log.Println("Unable to decrypt the file")
