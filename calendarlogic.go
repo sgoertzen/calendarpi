@@ -32,7 +32,6 @@ func Sync(user User) {
 	user.Save()
 }
 
-// TODO make the appointment array a pointer as well
 func mergeEvents(user User, appointments *[]xchango.Appointment, events *calendar.Events) error {
 
 	actions, err := buildDiffLists(appointments, events)
