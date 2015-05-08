@@ -1,15 +1,18 @@
 package main
 
 type Config struct {
-	SyncInterval       string
-	WebServerPort      string
-	SSLCertificateFile string
-	SSLPrivateKeyFile  string
-	OauthClientId      string
-	OauthClientSecret  string
-	OauthRedirectURL   string
-	ExchangeServerURL  string
-	MaxResults         int
+	SyncInterval          string
+	WebServerPort         string
+	SSLCertificateFile    string
+	SSLPrivateKeyFile     string
+	OauthClientId         string
+	OauthClientSecret     string
+	OauthRedirectURL      string
+	ExchangeServerURL     string
+	ExchangeServerVersion string
+	UserExchangeDomain    string
+	CalendarLookAheadDays int
+	MaxResults            int
 }
 
 func (c Config) TimeBetweenSync() string {
@@ -42,6 +45,18 @@ func (c Config) RedirectURL() string {
 
 func (c Config) ExchangeURL() string {
 	return c.ExchangeServerURL
+}
+
+func (c Config) ExchangeVersion() string {
+	return c.ExchangeServerVersion
+}
+
+func (c Config) UserDomain() string {
+	return c.UserExchangeDomain
+}
+
+func (c Config) LookAheadDays() int {
+	return c.CalendarLookAheadDays
 }
 
 func (c Config) MaxFetchSize() int {

@@ -7,5 +7,8 @@
   "OauthClientSecret": "From_http://developer.google.com/console",
   "OauthRedirectURL": "https://your_domain.com/oauth2callback",
   "ExchangeServerURL": "https://mail.your_exchange_server.com/EWS/Exchange.asmx",
+  "ExchangeServerVersion": "2006",
+  "UserExchangeDomain": "",
+  "CalendarLookAheadDays": 14,
   "MaxResults": 100
 }

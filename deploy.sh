@@ -6,6 +6,7 @@ ssh pi@calendarpi "mv /home/pi/gopath/src/github.com/sgoertzen/calendarpi/blabbe
 echo 'Removing the old version'
 ssh pi@calendarpi "rm -rf /home/pi/gopath/src/github.com/sgoertzen/calendarpi/"
 ssh pi@calendarpi "rm -rf /home/pi/gopath/src/github.com/sgoertzen/html2text/"
+ssh pi@calendarpi "rm -rf /home/pi/gopath/src/github.com/sgoertzen/xchango/"
 echo 'Fetching the new version from github'
 ssh pi@calendarpi "export GOPATH=/home/pi/gopath && /home/pi/go/bin/go get github.com/sgoertzen/calendarpi"
 echo 'Create the certs directory'

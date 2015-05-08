@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/sgoertzen/xchango"
 	"io/ioutil"
 	"log"
 	"os"
@@ -12,16 +13,16 @@ const configfile = "conf.json"
 
 func main() {
 	config := readConfig()
-	
-	f, err := os.OpenFile("output.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+
+	f, err := os.OpenFile("output.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-	    log.Fatalf("error opening file: %v", err)
+		log.Fatalf("error opening file: %v", err)
 	}
-	defer f.Close()  // This line must be done in this method
+	defer f.Close() // This line must be done in this method
 	log.SetOutput(f)
-	
+
 	SetOauthConfig(config)
-	SetExchangeConfig(config)
+	xchango.SetExchangeConfig(config)
 	go RunServer(config)
 	runSyncLoop(config)
 	log.Println("Server is exiting")
@@ -52,7 +53,7 @@ func runSyncLoop(config Config) {
 	if err != nil {
 		log.Fatal("Unable to parse sleep time", err)
 	}
-		
+
 	sleepTime, err := time.ParseDuration("1m")
 	for true {
 		users := GetUsers()

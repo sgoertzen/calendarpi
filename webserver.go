@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/sgoertzen/xchango"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -154,10 +155,26 @@ func showDeleteForm(w http.ResponseWriter, r *http.Request, message string, user
 func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	user := User{Username: username, Password: password, State: exchangeLoginCaptured}
+	user := User{
+		ExUser: &xchango.ExchangeUser {
+			Username: username, 
+			Password: password,
+		},
+		Username: username, 
+		Password: password,
+		State: exchangeLoginCaptured}
 	user.Save()
-	GetFolderAndChangeKey(user)
-	tryOAuth2(w, r, user)
+
+	cal, err := xchango.GetExchangeCalendar(user.ExUser)
+	if err != nil {
+		user.State = registererror
+		user.Save()
+	} else {
+		user.ExCal = cal
+		user.State = exchangeLoginVerified
+		user.Save()
+		tryOAuth2(w, r, user)
+	}
 }
 
 func saveCalendarForm(w http.ResponseWriter, r *http.Request) {
