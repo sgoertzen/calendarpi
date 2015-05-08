@@ -32,8 +32,8 @@ func Sync(user User) {
 	user.Save()
 }
 
-// TODO< make the appointment array a pointer as well
-func mergeEvents(user User, appointments []xchango.Appointment, events *calendar.Events) error {
+// TODO make the appointment array a pointer as well
+func mergeEvents(user User, appointments *[]xchango.Appointment, events *calendar.Events) error {
 
 	actions, err := buildDiffLists(appointments, events)
 
@@ -71,7 +71,7 @@ func mergeEvents(user User, appointments []xchango.Appointment, events *calendar
 	return nil
 }
 
-func buildDiffLists(appointments []xchango.Appointment, events *calendar.Events) (EventActions, error) {
+func buildDiffLists(appointments *[]xchango.Appointment, events *calendar.Events) (EventActions, error) {
 	var itemMap = make(map[string]*calendar.Event)
 	for _, event := range events.Items {
 		if event.ExtendedProperties == nil || len(event.ExtendedProperties.Private["ItemId"]) == 0 {
@@ -81,7 +81,7 @@ func buildDiffLists(appointments []xchango.Appointment, events *calendar.Events)
 	}
 
 	var eventActions EventActions
-	for _, app := range appointments {
+	for _, app := range *appointments {
 		existingEvent := itemMap[app.ItemId]
 		if existingEvent != nil {
 			delete(itemMap, app.ItemId)

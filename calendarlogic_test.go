@@ -12,7 +12,7 @@ func TestBuildDiffListsEmpty(t *testing.T) {
 	apps := []xchango.Appointment{}
 	events := calendar.Events{}
 
-	actions, err := buildDiffLists(apps, &events)
+	actions, err := buildDiffLists(&apps, &events)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(actions.toAdd))
 	assert.Equal(t, 0, len(actions.toUpdate))
@@ -29,7 +29,7 @@ func TestBuildDiffListsAllNew(t *testing.T) {
 	}
 	events := calendar.Events{}
 
-	actions, err := buildDiffLists(apps, &events)
+	actions, err := buildDiffLists(&apps, &events)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(actions.toAdd))
 	assert.Equal(t, "sub", actions.toAdd[0].Summary)
@@ -52,7 +52,7 @@ func TestBuildDiffListsDelete(t *testing.T) {
 		},
 	}
 
-	actions, err := buildDiffLists(apps, &events)
+	actions, err := buildDiffLists(&apps, &events)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(actions.toDelete))
 	assert.Equal(t, "45", actions.toDelete[0].Id)
@@ -71,7 +71,7 @@ func TestBuildDiffListsLeaveExisting(t *testing.T) {
 		},
 	}
 
-	actions, err := buildDiffLists(apps, &events)
+	actions, err := buildDiffLists(&apps, &events)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(actions.toDelete))
 }
