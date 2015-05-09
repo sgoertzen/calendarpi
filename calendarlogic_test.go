@@ -165,3 +165,26 @@ func TestPopulateEventExistingEndChange(t *testing.T) {
 	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
 	assert.False(t, changes)
 }
+
+func TestPopulateEventExisitingAllDay(t *testing.T) {
+	tStart, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
+	tEnd, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
+	a := xchango.Appointment{
+		Subject:       "phone call",
+		ItemId:        "123",
+		Start:         tStart,
+		End:           tEnd,
+		IsAllDayEvent: true,
+	}
+	e := calendar.Event{
+		Id:          "123",
+		Summary:     "phone call",
+		Description: "",
+		Start:       &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
+		End:         &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
+	}
+	changes := populateEvent(&e, &a)
+
+	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
+	assert.False(t, changes)
+}
