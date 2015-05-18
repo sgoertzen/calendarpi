@@ -25,7 +25,7 @@ func Sync(user User) {
 		user.State = successfulsync
 	}
 	if err != nil {
-		log.Println("Error while syncing events for", user, err)
+		log.Println("Error while syncing events for", user.Username, err)
 		user.State = syncingerror
 	}
 	user.LastSync = time.Now()

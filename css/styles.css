@@ -14,9 +14,6 @@ table.table-style-three th {
     background-color: #D56A6A;
     color: #ffffff;
 }
-table.table-style-three tr:hover td {
-    cursor: pointer;
-}
 table.table-style-three tr:nth-child(even) td{
     background-color: #F7CFCF;
 }
