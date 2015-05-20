@@ -185,7 +185,6 @@ func TestPopulateEventExisitingAllDay(t *testing.T) {
 	}
 	changes := populateEvent(&e, &a)
 
-	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
 	assert.False(t, changes)
 }
 
@@ -202,7 +201,6 @@ func TestPopulateEventEmptyAllDay(t *testing.T) {
 	e := calendar.Event{}
 	changes := populateEvent(&e, &a)
 
-	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
 	assert.True(t, changes)
 	assert.Equal(t, a.Subject, e.Summary)
 	assert.Equal(t, &calendar.EventDateTime{Date: "2015-04-13"}, e.Start)

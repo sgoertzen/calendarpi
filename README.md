@@ -11,7 +11,7 @@ CalendarPi is a small website that allows users to sync their exchange calenders
 ![Screenshot](https://github.com/sgoertzen/calendarpi/blob/master/images/ScreenShot.png)
 
 ### Details
-CalendarPi supports one directional sync from Exchange to Google Calendar.  It does support new, changed and deleted events.
+CalendarPi supports one directional sync from Exchange to Google Calendar.  It will automatically add new items, update exisiting items and delete removed items.
 
 ### Security
 CalendarPi secures all credentials by storing them in an encrypted file locally.  The master password for encrypting and decrypting is never stored on the system.  It must be entered each time the software starts up and is just kept in memory.  This prohibts anyone who has physical access to the machine from recovering any sensitive data.
