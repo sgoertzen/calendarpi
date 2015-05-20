@@ -14,7 +14,7 @@ func TestSerializeAndDeserialize(t *testing.T) {
 				Password: "red",
 			},
 			ExCal: &xchango.ExchangeCalendar{
-				Folderid: "fid",
+				Folderid:  "fid",
 				Changekey: "ckey",
 			},
 		},

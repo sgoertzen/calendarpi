@@ -123,16 +123,17 @@ func populateEvent(e *calendar.Event, a *xchango.Appointment) bool {
 	}
 
 	if a.IsAllDayEvent {
-		eventStart := calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
+		appStart := calendar.EventDateTime{Date: a.Start.Format("2006-01-02")}
+		appEnd := calendar.EventDateTime{Date: a.End.Format("2006-01-02")}
 		var eStart string
 		if e.Start != nil {
 			tStart, _ := time.Parse(time.RFC3339, e.Start.Date)
 			eStart = tStart.Format("2006-01-02")
 		}
-		if e.Start == nil || eventStart.Date != eStart {
-			log.Println("Start has changed: ", eventStart.Date)
-			e.Start = &eventStart
-			e.End = &eventStart
+		if e.Start == nil || appStart.Date != eStart {
+			log.Println("Start has changed: ", appStart.Date)
+			e.Start = &appStart
+			e.End = &appEnd
 			changes = true
 		}
 	} else {

@@ -156,13 +156,13 @@ func saveAddForm(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	user := User{
-		ExUser: &xchango.ExchangeUser {
-			Username: username, 
+		ExUser: &xchango.ExchangeUser{
+			Username: username,
 			Password: password,
 		},
-		Username: username, 
+		Username: username,
 		Password: password,
-		State: exchangeLoginCaptured}
+		State:    exchangeLoginCaptured}
 	user.Save()
 
 	cal, err := xchango.GetExchangeCalendar(user.ExUser)

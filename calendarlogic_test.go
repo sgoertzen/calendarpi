@@ -181,10 +181,31 @@ func TestPopulateEventExisitingAllDay(t *testing.T) {
 		Summary:     "phone call",
 		Description: "",
 		Start:       &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
-		End:         &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
+		End:         &calendar.EventDateTime{Date: "2015-04-14T16:00:00Z"},
 	}
 	changes := populateEvent(&e, &a)
 
 	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
 	assert.False(t, changes)
+}
+
+func TestPopulateEventEmptyAllDay(t *testing.T) {
+	tStart, _ := time.Parse(time.RFC3339, "2015-04-13T16:00:00Z")
+	tEnd, _ := time.Parse(time.RFC3339, "2015-04-14T16:00:00Z")
+	a := xchango.Appointment{
+		Subject:       "phone call",
+		ItemId:        "123",
+		Start:         tStart,
+		End:           tEnd,
+		IsAllDayEvent: true,
+	}
+	e := calendar.Event{}
+	changes := populateEvent(&e, &a)
+
+	// Google adjusts the end time between 5 and 15 minutes.  We need to ignore end time differences.
+	assert.True(t, changes)
+	assert.Equal(t, a.Subject, e.Summary)
+	assert.Equal(t, &calendar.EventDateTime{Date: "2015-04-13"}, e.Start)
+	assert.Equal(t, &calendar.EventDateTime{Date: "2015-04-14"}, e.End)
+	assert.Equal(t, a.ItemId, e.ExtendedProperties.Private["ItemId"])
 }
