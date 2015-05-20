@@ -129,8 +129,9 @@ func populateEvent(e *calendar.Event, a *xchango.Appointment) bool {
 		if e.Start != nil {
 			log.Println("Datetime: " + e.Start.DateTime)
 			log.Println("Date: " + e.Start.Date)
-			tStart, _ := time.Parse(time.RFC3339, e.Start.DateTime)
-			eStart = tStart.Format("2006-01-02")
+			//tStart, _ := time.Parse(time.RFC3339, e.Start.Date)
+			//eStart = tStart.Format("2006-01-02")
+			eStart = e.Start.Date
 		}
 		if e.Start == nil || appStart.Date != eStart {
 			log.Println("Start has changed: ", appStart.Date, eStart)

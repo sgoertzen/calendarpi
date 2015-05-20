@@ -180,8 +180,8 @@ func TestPopulateEventExisitingAllDay(t *testing.T) {
 		Id:          "123",
 		Summary:     "phone call",
 		Description: "",
-		Start:       &calendar.EventDateTime{Date: "2015-04-13T16:00:00Z"},
-		End:         &calendar.EventDateTime{Date: "2015-04-14T16:00:00Z"},
+		Start:       &calendar.EventDateTime{Date: "2015-04-13"},
+		End:         &calendar.EventDateTime{Date: "2015-04-14"},
 	}
 	changes := populateEvent(&e, &a)
 
