@@ -39,7 +39,7 @@ func mergeEvents(user User, appointments *[]xchango.Appointment, events *calenda
 	client := getClient(user)
 	srv, err := calendar.New(client)
 	if err != nil {
-		log.Println("Unable to retrieve calendar Client %v", err)
+		log.Println("Unable to retrieve calendar Client. ", err)
 		return err
 	}
 

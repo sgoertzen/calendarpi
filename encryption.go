@@ -61,8 +61,6 @@ func Decrypt(key []byte, cryptoText []byte) (string, error) {
 	// include it at the beginning of the ciphertext.
 	if len(ciphertext) < aes.BlockSize {
 		panic("ciphertext too short")
-		err := errors.New("ciphertext to short")
-		return "", err
 	}
 	iv := ciphertext[:aes.BlockSize]
 	ciphertext = ciphertext[aes.BlockSize:]

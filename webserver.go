@@ -228,13 +228,13 @@ func showTemplatedFile(w http.ResponseWriter, filename string, data map[string]i
 
 	t, err := template.ParseFiles(filename)
 	if err != nil {
-		log.Printf("Error is", err)
+		log.Println("Error while parsing template file", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	err = t.Execute(w, data)
 	if err != nil {
-		log.Printf("Error while showing list ", err)
+		log.Println("Error while showing list ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

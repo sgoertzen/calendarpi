@@ -74,7 +74,7 @@ func getGCalAppointments(user User) (*calendar.Events, error) {
 	client := getClient(user)
 	srv, err := calendar.New(client)
 	if err != nil {
-		log.Println("Unable to retrieve calendar Client %v", err)
+		log.Println("Unable to retrieve calendar Client", err)
 		return nil, err
 	}
 	t := time.Now().Format(time.RFC3339)
@@ -82,7 +82,7 @@ func getGCalAppointments(user User) (*calendar.Events, error) {
 		SingleEvents(true).
 		TimeMin(t).MaxResults(int64(maxFetchSize)).OrderBy("startTime").Do()
 	if err != nil {
-		log.Println("Unable to retrieve the user's events. %v", err)
+		log.Println("Unable to retrieve the user's events. ", err)
 		return nil, err
 	}
 	return events, nil
