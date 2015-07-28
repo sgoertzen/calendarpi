@@ -195,13 +195,13 @@ func saveCalendarForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func showPasswordForm(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Showing password for: '%s'", username)
 	username := ""
 	m := r.URL.Query()
 	usernames := m["username"]
 	if len(usernames) >= 1 {
 		username = usernames[0]
 	}
+	log.Printf("Showing password for: '%s'", username)
 	data := map[string]interface{}{
 		"Username": username,
 	}
@@ -215,7 +215,7 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 	confirmpassword := r.FormValue("confirmpassword")
 	user := GetUser(username)
 	
-	if user == nil {
+	if user == (User{}) {
 		log.Printf("Unable to find a user named %s", username)
 		return
 	}
