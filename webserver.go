@@ -195,7 +195,7 @@ func saveCalendarForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func showPasswordForm(w http.ResponseWriter, r *http.Request) {
-	log.Println("Showing password form for  ", )
+	log.Printf("Showing password for: '%s'", username)
 	username := ""
 	m := r.URL.Query()
 	usernames := m["username"]
@@ -214,9 +214,22 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 	newpassword := r.FormValue("newpassword")
 	confirmpassword := r.FormValue("confirmpassword")
 	user := GetUser(username)
-	if user.Password == oldpassword && newpassword == confirmpassword {
-		user.Password = newpassword
+	
+	if user == nil {
+		log.Printf("Unable to find a user named %s", username)
+		return
 	}
+	if user.Password == oldpassword {
+		log.Printf("Passwords do not match for user named %s", username)
+		return
+	}
+	if newpassword != confirmpassword {
+		log.Printf("New passwords do not match: '%s'", username)
+		return
+	}
+	
+	log.Printf("Changing password for: '%s'", username)
+	user.Password = newpassword
 	user.Save()
 	redirectHome(w, r)
 }
