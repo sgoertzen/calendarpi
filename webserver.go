@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type WebConfig interface {
@@ -229,6 +230,7 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	log.Printf("Changing password for: '%s'", username)
+	user.LastSync = time.Time{}
 	user.Password = newpassword
 	user.Save()
 	redirectHome(w, r)
