@@ -202,7 +202,7 @@ func showPasswordForm(w http.ResponseWriter, r *http.Request) {
 	if len(usernames) >= 1 {
 		username = usernames[0]
 	}
-	log.Printf("Showing password for: '%s'", username)
+	log.Printf("Showing password change form for: '%s'", username)
 	data := map[string]interface{}{
 		"Username": username,
 	}
@@ -231,6 +231,7 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("Changing password for: '%s'", username)
 	user.LastSync = time.Time{}
+	user.State = registered
 	user.Password = newpassword
 	user.Save()
 	redirectHome(w, r)
