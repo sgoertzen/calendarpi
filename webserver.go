@@ -66,6 +66,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if !needskey(w) {
 			showCalendarSelectPage(w, r)
 		}
+	case "changepassword":
+		if !needskey(w) {
+			showPasswordForm(w, r)
+		}
+	case "savenewpassword":
+		if !needskey(w) {
+			savePasswordForm(w, r)
+		}
 	case "sync":
 		if !needskey(w) {
 			syncUser(w, r)
@@ -182,6 +190,33 @@ func saveCalendarForm(w http.ResponseWriter, r *http.Request) {
 	calendar := r.FormValue("calendar")
 	user := GetUser(username)
 	user.GCalid = calendar
+	user.Save()
+	redirectHome(w, r)
+}
+
+func showPasswordForm(w http.ResponseWriter, r *http.Request) {
+	log.Println("Showing password form for  ", )
+	username := ""
+	m := r.URL.Query()
+	usernames := m["username"]
+	if len(usernames) >= 1 {
+		username = usernames[0]
+	}
+	data := map[string]interface{}{
+		"Username": username,
+	}
+	showTemplatedFile(w, "html/changepassword.html", data)
+}
+
+func savePasswordForm(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("username")
+	oldpassword := r.FormValue("oldpassword")
+	newpassword := r.FormValue("newpassword")
+	confirmpassword := r.FormValue("confirmpassword")
+	user := GetUser(username)
+	if user.Password == oldpassword && newpassword == confirmpassword {
+		user.Password = newpassword
+	}
 	user.Save()
 	redirectHome(w, r)
 }
