@@ -234,6 +234,18 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 	user.State = registered
 	user.Password = newpassword
 	user.Save()
+	
+	cal, err := xchango.GetExchangeCalendar(user.ExUser)
+	if err != nil {
+		user.State = registererror
+		user.Save()
+	} else {
+		user.ExCal = cal
+		user.State = registered
+		user.Save()
+		tryOAuth2(w, r, user)
+	}
+	
 	redirectHome(w, r)
 }
 
