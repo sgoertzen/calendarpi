@@ -243,9 +243,7 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 		user.ExCal = cal
 		user.State = registered
 		user.Save()
-		tryOAuth2(w, r, user)
 	}
-	
 	redirectHome(w, r)
 }
 

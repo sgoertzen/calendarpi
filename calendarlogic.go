@@ -19,10 +19,16 @@ func Sync(user User) {
 	user.Save()
 
 	appointments, err := xchango.GetExchangeAppointments(user.ExUser, user.ExCal)
+	if err != nil {
+		log.Println("Unable to get user's exchange appointments", err)
+	}
+	if appointments == nil {
+		log.Println("Appointments object is nil for user: ", user.Username)
+	}
 	log.Printf("Found %d appointment(s)", len(*appointments))
 	events, err := getGCalAppointments(user)
-	log.Printf("Found %d event(s)", len(events.Items))
 	if err == nil {
+		log.Printf("Found %d event(s)", len(events.Items))
 		err = mergeEvents(user, appointments, events)
 		user.State = successfulsync
 	}
