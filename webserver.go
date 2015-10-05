@@ -220,8 +220,8 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Unable to find a user named %s", username)
 		return
 	}
-	if user.Password == oldpassword {
-		log.Printf("Passwords do not match for user named %s", username)
+	if user.Password != oldpassword {
+		log.Printf("Password does not match old password for user named %s", username)
 		return
 	}
 	if newpassword != confirmpassword {
@@ -236,10 +236,12 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 	user.Save()
 	
 	cal, err := xchango.GetExchangeCalendar(user.ExUser)
-	if err != nil {
+	if err != nil || cal == nil {
+		log.Println("Unable to get the exchange client", err)
 		user.State = registererror
 		user.Save()
 	} else {
+		log.Printf("Got exchange calendar of Folder: '%s' and Key: '%s", cal.Folderid, cal, cal.Changekey)
 		user.ExCal = cal
 		user.State = registered
 		user.Save()

@@ -6,4 +6,5 @@ coverage.out
 .DS_Store
 .settings/*
 .idea/*
+.vscode/*
 output.log
