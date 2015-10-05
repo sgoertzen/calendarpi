@@ -241,7 +241,7 @@ func savePasswordForm(w http.ResponseWriter, r *http.Request) {
 		user.State = registererror
 		user.Save()
 	} else {
-		log.Printf("Got exchange calendar of Folder: '%s' and Key: '%s", cal.Folderid, cal, cal.Changekey)
+		log.Printf("Got exchange calendar of Folder: '%s' and Key: '%s", cal.Folderid, cal.Changekey)
 		user.ExCal = cal
 		user.State = registered
 		user.Save()
